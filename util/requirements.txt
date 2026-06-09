@@ -1,0 +1,8 @@
+requests==2.33.0
+python-dotenv==1.2.2
+sqlalchemy==2.0.46
+pymysql==1.1.2
+configparser==7.1.0
+setuptools==80.10.2
+python-dateutil==2.9.0.post0
+pandas==2.2.3

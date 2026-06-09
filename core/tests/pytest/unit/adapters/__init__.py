@@ -1,0 +1,1 @@
+# Adapters Unit Tests Package

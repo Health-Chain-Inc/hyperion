@@ -1,0 +1,81 @@
+{
+    "resourceType": "CareTeam",
+    "id": "8282e1ff-a27b-d69a-80c1-b574dfbe2b42",
+    "meta": {
+        "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-careteam"
+        ]
+    },
+    "status": "active",
+    "subject": {
+        "reference": "urn:uuid:b0a06ead-cc42-aa48-dad6-841d4aa679fa"
+    },
+    "encounter": {
+        "reference": "urn:uuid:a889805b-20ca-0ba6-5b5c-e617ce99b0cc"
+    },
+    "period": {
+        "start": "1954-04-03T12:14:47-05:00"
+    },
+    "participant": [
+        {
+            "role": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "116154003",
+                            "display": "Patient"
+                        }
+                    ],
+                    "text": "Patient"
+                }
+            ],
+            "member": {
+                "reference": "urn:uuid:b0a06ead-cc42-aa48-dad6-841d4aa679fa",
+                "display": "Mr. Abdul218 Harris789"
+            }
+        },
+        {
+            "role": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "223366009",
+                            "display": "Healthcare professional (occupation)"
+                        }
+                    ],
+                    "text": "Healthcare professional (occupation)"
+                }
+            ],
+            "member": {
+                "reference": "Practitioner?identifier=http://hl7.org/fhir/sid/us-npi|9999999989",
+                "display": "Dr. Lesley194 Fisher429"
+            }
+        },
+        {
+            "role": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "224891009",
+                            "display": "Healthcare services (qualifier value)"
+                        }
+                    ],
+                    "text": "Healthcare services (qualifier value)"
+                }
+            ],
+            "member": {
+                "reference": "Organization?identifier=https://github.com/synthetichealth/synthea|69176529-fd1f-3b3f-abce-a0a3626769eb",
+                "display": "MOUNT AUBURN HOSPITAL"
+            }
+        }
+    ],
+    "managingOrganization": [
+        {
+            "reference": "Organization?identifier=https://github.com/synthetichealth/synthea|69176529-fd1f-3b3f-abce-a0a3626769eb",
+            "display": "MOUNT AUBURN HOSPITAL"
+        }
+    ]
+}

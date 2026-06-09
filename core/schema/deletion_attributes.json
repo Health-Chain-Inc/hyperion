@@ -1,0 +1,2117 @@
+{
+    "Account": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "subject",
+            "owner",
+            "partof"
+        ]
+    },
+    "ActivityDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic",
+            "code",
+            "productcodeableconcept",
+            "bodysite"
+        ],
+        "reference": [
+            "subjectreference",
+            "location",
+            "productreference",
+            "specimenrequirement",
+            "observationrequirement",
+            "observationresultrequirement"
+        ]
+    },
+    "AdverseEvent": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "event",
+            "seriousness",
+            "severity",
+            "outcome"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "resultingcondition",
+            "location",
+            "recorder",
+            "contributor",
+            "subjectmedicalhistory",
+            "referencedocument",
+            "study"
+        ]
+    },
+    "AllergyIntolerance": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "clinicalstatus",
+            "verificationstatus",
+            "code"
+        ],
+        "reference": [
+            "patient",
+            "encounter",
+            "recorder",
+            "asserter"
+        ]
+    },
+    "Appointment": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "cancelationreason",
+            "servicecategory",
+            "servicetype",
+            "specialty",
+            "appointmenttype",
+            "reasoncode"
+        ],
+        "reference": [
+            "reasonreference",
+            "supportinginformation",
+            "slot",
+            "basedon"
+        ]
+    },
+    "AppointmentResponse": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "participanttype"
+        ],
+        "reference": [
+            "appointment",
+            "actor"
+        ]
+    },
+    "AuditEvent": {
+        "identifier": [],
+        "codeableconcept": [
+            "purposeofevent"
+        ],
+        "reference": []
+    },
+    "Basic": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code"
+        ],
+        "reference": [
+            "subject",
+            "author"
+        ]
+    },
+    "Binary": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": [
+            "securitycontext"
+        ]
+    },
+    "BiologicallyDerivedProduct": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "productcode"
+        ],
+        "reference": [
+            "request",
+            "parent"
+        ]
+    },
+    "BodyStructure": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "morphology",
+            "location",
+            "locationqualifier"
+        ],
+        "reference": [
+            "patient"
+        ]
+    },
+    "Bundle": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "CapabilityStatement": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "CarePlan": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category"
+        ],
+        "reference": [
+            "basedon",
+            "replaces",
+            "partof",
+            "subject",
+            "encounter",
+            "author",
+            "contributor",
+            "careteam",
+            "addresses",
+            "supportinginfo",
+            "goal"
+        ]
+    },
+    "CareTeam": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "reasoncode"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "reasonreference",
+            "managingorganization"
+        ]
+    },
+    "CatalogEntry": {
+        "identifier": [
+            "identifier",
+            "additionalidentifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "classification",
+            "additionalcharacteristic",
+            "additionalclassification"
+        ],
+        "reference": [
+            "referenceditem"
+        ]
+    },
+    "ChargeItem": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "bodysite",
+            "reason",
+            "productcodeableconcept"
+        ],
+        "reference": [
+            "partof",
+            "subject",
+            "context",
+            "performingorganization",
+            "requestingorganization",
+            "costcenter",
+            "enterer",
+            "service",
+            "productreference",
+            "account",
+            "supportinginformation"
+        ]
+    },
+    "ChargeItemDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction",
+            "code"
+        ],
+        "reference": [
+            "instance"
+        ]
+    },
+    "Claim": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "subtype",
+            "priority",
+            "fundsreserve"
+        ],
+        "reference": [
+            "patient",
+            "enterer",
+            "insurer",
+            "provider",
+            "prescription",
+            "originalprescription",
+            "referral",
+            "facility"
+        ]
+    },
+    "ClaimResponse": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "subtype",
+            "payeetype",
+            "fundsreserve",
+            "formcode"
+        ],
+        "reference": [
+            "patient",
+            "insurer",
+            "requestor",
+            "request",
+            "communicationrequest"
+        ]
+    },
+    "ClinicalImpression": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "code",
+            "prognosiscodeableconcept"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "assessor",
+            "previous",
+            "problem",
+            "prognosisreference",
+            "supportinginfo"
+        ]
+    },
+    "CodeSystem": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "Communication": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "medium",
+            "topic",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "inresponseto",
+            "subject",
+            "about",
+            "encounter",
+            "recipient",
+            "sender",
+            "reasonreference"
+        ]
+    },
+    "CommunicationRequest": {
+        "identifier": [
+            "identifier",
+            "groupidentifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "medium",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "replaces",
+            "subject",
+            "about",
+            "encounter",
+            "requester",
+            "recipient",
+            "sender",
+            "reasonreference"
+        ]
+    },
+    "CompartmentDefinition": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "Composition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "category"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "author",
+            "custodian"
+        ]
+    },
+    "ConceptMap": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "Condition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "clinicalstatus",
+            "verificationstatus",
+            "category",
+            "severity",
+            "code",
+            "bodysite"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "recorder",
+            "asserter"
+        ]
+    },
+    "Consent": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "scope",
+            "category",
+            "policyrule"
+        ],
+        "reference": [
+            "patient",
+            "performer",
+            "organization",
+            "sourcereference"
+        ]
+    },
+    "Contract": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "legalstate",
+            "contentderivative",
+            "expirationtype",
+            "scope",
+            "topiccodeableconcept",
+            "type",
+            "subtype"
+        ],
+        "reference": [
+            "instantiatescanonical",
+            "subject",
+            "authority",
+            "domain",
+            "site",
+            "author",
+            "topicreference",
+            "supportinginfo",
+            "relevanthistory",
+            "legallybindingreference"
+        ]
+    },
+    "Coverage": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "relationship"
+        ],
+        "reference": [
+            "policyholder",
+            "subscriber",
+            "beneficiary",
+            "payor",
+            "contract"
+        ]
+    },
+    "CoverageEligibilityRequest": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "priority"
+        ],
+        "reference": [
+            "patient",
+            "enterer",
+            "provider",
+            "insurer",
+            "facility"
+        ]
+    },
+    "CoverageEligibilityResponse": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "form"
+        ],
+        "reference": [
+            "patient",
+            "requestor",
+            "request",
+            "insurer"
+        ]
+    },
+    "DetectedIssue": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code"
+        ],
+        "reference": [
+            "patient",
+            "author",
+            "implicated"
+        ]
+    },
+    "Device": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "type",
+            "safety"
+        ],
+        "reference": [
+            "definition",
+            "patient",
+            "owner",
+            "location",
+            "parent"
+        ]
+    },
+    "DeviceDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "safety",
+            "languagecode"
+        ],
+        "reference": [
+            "manufacturerreference",
+            "owner",
+            "parentdevice"
+        ]
+    },
+    "DeviceMetric": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "unit"
+        ],
+        "reference": [
+            "source",
+            "parent"
+        ]
+    },
+    "DeviceRequest": {
+        "identifier": [
+            "identifier",
+            "groupidentifier"
+        ],
+        "codeableconcept": [
+            "codecodeableconcept",
+            "performertype",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "priorrequest",
+            "codereference",
+            "subject",
+            "encounter",
+            "requester",
+            "performer",
+            "reasonreference",
+            "insurance",
+            "supportinginfo",
+            "relevanthistory"
+        ]
+    },
+    "DeviceUseStatement": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "reasoncode",
+            "bodysite"
+        ],
+        "reference": [
+            "basedon",
+            "subject",
+            "derivedfrom",
+            "source",
+            "device",
+            "reasonreference"
+        ]
+    },
+    "DiagnosticReport": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "code",
+            "conclusioncode"
+        ],
+        "reference": [
+            "basedon",
+            "subject",
+            "encounter",
+            "performer",
+            "resultsinterpreter",
+            "specimen",
+            "result",
+            "imagingstudy"
+        ]
+    },
+    "DocumentManifest": {
+        "identifier": [
+            "masteridentifier",
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "subject",
+            "author",
+            "recipient",
+            "content"
+        ]
+    },
+    "DocumentReference": {
+        "identifier": [
+            "masteridentifier",
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "category",
+            "securitylabel"
+        ],
+        "reference": [
+            "subject",
+            "author",
+            "authenticator",
+            "custodian"
+        ]
+    },
+    "EffectEvidenceSynthesis": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction",
+            "topic",
+            "synthesistype",
+            "studytype"
+        ],
+        "reference": [
+            "population",
+            "exposure",
+            "exposurealternative",
+            "outcome"
+        ]
+    },
+    "Encounter": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "servicetype",
+            "priority",
+            "reasoncode"
+        ],
+        "reference": [
+            "subject",
+            "episodeofcare",
+            "basedon",
+            "appointment",
+            "reasonreference",
+            "account",
+            "serviceprovider",
+            "partof"
+        ]
+    },
+    "Endpoint": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "payloadtype"
+        ],
+        "reference": [
+            "managingorganization"
+        ]
+    },
+    "EnrollmentRequest": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "insurer",
+            "provider",
+            "candidate",
+            "coverage"
+        ]
+    },
+    "EnrollmentResponse": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "request",
+            "organization",
+            "requestprovider"
+        ]
+    },
+    "EpisodeOfCare": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "patient",
+            "managingorganization",
+            "referralrequest",
+            "caremanager",
+            "team",
+            "account"
+        ]
+    },
+    "EventDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "subjectreference"
+        ]
+    },
+    "Evidence": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "exposurebackground",
+            "exposurevariant",
+            "outcome"
+        ]
+    },
+    "EvidenceVariable": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": []
+    },
+    "ExampleScenario": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "ExplanationOfBenefit": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "subtype",
+            "priority",
+            "fundsreserverequested",
+            "fundsreserve",
+            "formcode"
+        ],
+        "reference": [
+            "patient",
+            "enterer",
+            "insurer",
+            "provider",
+            "prescription",
+            "originalprescription",
+            "referral",
+            "facility",
+            "claim",
+            "claimresponse"
+        ]
+    },
+    "FamilyMemberHistory": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "dataabsentreason",
+            "relationship",
+            "sex",
+            "reasoncode"
+        ],
+        "reference": [
+            "patient",
+            "reasonreference"
+        ]
+    },
+    "Flag": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "code"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "author"
+        ]
+    },
+    "Goal": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "achievementstatus",
+            "category",
+            "priority",
+            "description",
+            "startcodeableconcept",
+            "outcomecode"
+        ],
+        "reference": [
+            "subject",
+            "expressedby",
+            "addresses",
+            "outcomereference"
+        ]
+    },
+    "GraphDefinition": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "Group": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code"
+        ],
+        "reference": [
+            "managingentity"
+        ]
+    },
+    "GuidanceResponse": {
+        "identifier": [
+            "requestidentifier",
+            "identifier"
+        ],
+        "codeableconcept": [
+            "modulecodeableconcept",
+            "reasoncode"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "performer",
+            "reasonreference",
+            "evaluationmessage",
+            "outputparameters",
+            "result"
+        ]
+    },
+    "HealthcareService": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "type",
+            "specialty",
+            "serviceprovisioncode",
+            "program",
+            "characteristic",
+            "communication",
+            "referralmethod"
+        ],
+        "reference": [
+            "providedby",
+            "location",
+            "coveragearea",
+            "endpoint"
+        ]
+    },
+    "ImagingStudy": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "procedurecode",
+            "reasoncode"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "basedon",
+            "referrer",
+            "interpreter",
+            "endpoint",
+            "procedurereference",
+            "location",
+            "reasonreference"
+        ]
+    },
+    "Immunization": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "vaccinecode",
+            "reportorigin",
+            "site",
+            "route",
+            "reasoncode",
+            "subpotentreason",
+            "programeligibility",
+            "fundingsource"
+        ],
+        "reference": [
+            "patient",
+            "encounter",
+            "location",
+            "manufacturer",
+            "reasonreference"
+        ]
+    },
+    "ImmunizationEvaluation": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "targetdisease",
+            "dosestatus",
+            "dosestatusreason"
+        ],
+        "reference": [
+            "patient",
+            "authority",
+            "immunizationevent"
+        ]
+    },
+    "ImmunizationRecommendation": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "patient",
+            "authority"
+        ]
+    },
+    "ImplementationGuide": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "InsurancePlan": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "ownedby",
+            "administeredby",
+            "coveragearea",
+            "endpoint",
+            "network"
+        ]
+    },
+    "Invoice": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "subject",
+            "recipient",
+            "issuer",
+            "account"
+        ]
+    },
+    "Library": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "subjectreference"
+        ]
+    },
+    "Linkage": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": [
+            "author"
+        ]
+    },
+    "List": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "orderedby",
+            "emptyreason"
+        ],
+        "reference": [
+            "subject",
+            "encounter",
+            "source"
+        ]
+    },
+    "Location": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "physicaltype"
+        ],
+        "reference": [
+            "managingorganization",
+            "partof",
+            "endpoint"
+        ]
+    },
+    "Measure": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic",
+            "scoring",
+            "compositescoring",
+            "type",
+            "improvementnotation"
+        ],
+        "reference": [
+            "subjectreference"
+        ]
+    },
+    "MeasureReport": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "improvementnotation"
+        ],
+        "reference": [
+            "subject",
+            "reporter",
+            "evaluatedresource"
+        ]
+    },
+    "Media": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "modality",
+            "view",
+            "reasoncode",
+            "bodysite"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "subject",
+            "encounter",
+            "operator",
+            "device"
+        ]
+    },
+    "Medication": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "form"
+        ],
+        "reference": [
+            "manufacturer"
+        ]
+    },
+    "MedicationAdministration": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "medicationcodeableconcept",
+            "reasoncode"
+        ],
+        "reference": [
+            "partof",
+            "medicationreference",
+            "subject",
+            "context",
+            "supportinginformation",
+            "reasonreference",
+            "request",
+            "device",
+            "eventhistory"
+        ]
+    },
+    "MedicationDispense": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreasoncodeableconcept",
+            "category",
+            "medicationcodeableconcept",
+            "type"
+        ],
+        "reference": [
+            "partof",
+            "statusreasonreference",
+            "medicationreference",
+            "subject",
+            "context",
+            "supportinginformation",
+            "location",
+            "authorizingprescription",
+            "destination",
+            "receiver",
+            "detectedissue",
+            "eventhistory"
+        ]
+    },
+    "MedicationKnowledge": {
+        "identifier": [],
+        "codeableconcept": [
+            "code",
+            "doseform",
+            "producttype",
+            "intendedroute"
+        ],
+        "reference": [
+            "manufacturer",
+            "associatedmedication",
+            "contraindication"
+        ]
+    },
+    "MedicationRequest": {
+        "identifier": [
+            "identifier",
+            "groupidentifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "medicationcodeableconcept",
+            "performertype",
+            "reasoncode",
+            "courseoftherapytype"
+        ],
+        "reference": [
+            "reportedreference",
+            "medicationreference",
+            "subject",
+            "encounter",
+            "supportinginformation",
+            "requester",
+            "performer",
+            "recorder",
+            "reasonreference",
+            "basedon",
+            "insurance",
+            "priorprescription",
+            "detectedissue",
+            "eventhistory"
+        ]
+    },
+    "MedicationStatement": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "medicationcodeableconcept",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "medicationreference",
+            "subject",
+            "context",
+            "informationsource",
+            "derivedfrom",
+            "reasonreference"
+        ]
+    },
+    "MedicinalProduct": {
+        "identifier": [
+            "identifier",
+            "crossreference"
+        ],
+        "codeableconcept": [
+            "type",
+            "combinedpharmaceuticaldoseform",
+            "legalstatusofsupply",
+            "additionalmonitoringindicator",
+            "paediatricuseindicator",
+            "productclassification"
+        ],
+        "reference": [
+            "pharmaceuticalproduct",
+            "packagedmedicinalproduct",
+            "attacheddocument",
+            "masterfile",
+            "contact",
+            "clinicaltrial"
+        ]
+    },
+    "MedicinalProductAuthorization": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "country",
+            "jurisdiction",
+            "status",
+            "legalbasis"
+        ],
+        "reference": [
+            "subject",
+            "holder",
+            "regulator"
+        ]
+    },
+    "MedicinalProductContraindication": {
+        "identifier": [],
+        "codeableconcept": [
+            "disease",
+            "diseasestatus",
+            "comorbidity"
+        ],
+        "reference": [
+            "subject",
+            "therapeuticindication"
+        ]
+    },
+    "MedicinalProductIndication": {
+        "identifier": [],
+        "codeableconcept": [
+            "diseasesymptomprocedure",
+            "diseasestatus",
+            "comorbidity",
+            "intendedeffect"
+        ],
+        "reference": [
+            "subject",
+            "undesirableeffect"
+        ]
+    },
+    "MedicinalProductIngredient": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "role"
+        ],
+        "reference": [
+            "manufacturer"
+        ]
+    },
+    "MedicinalProductInteraction": {
+        "identifier": [],
+        "codeableconcept": [
+            "type",
+            "effect",
+            "incidence",
+            "management"
+        ],
+        "reference": [
+            "subject"
+        ]
+    },
+    "MedicinalProductManufactured": {
+        "identifier": [],
+        "codeableconcept": [
+            "manufactureddoseform",
+            "unitofpresentation",
+            "othercharacteristics"
+        ],
+        "reference": [
+            "manufacturer",
+            "ingredient"
+        ]
+    },
+    "MedicinalProductPackaged": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "legalstatusofsupply"
+        ],
+        "reference": [
+            "subject",
+            "marketingauthorization",
+            "manufacturer"
+        ]
+    },
+    "MedicinalProductPharmaceutical": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "administrabledoseform",
+            "unitofpresentation"
+        ],
+        "reference": [
+            "ingredient",
+            "device"
+        ]
+    },
+    "MedicinalProductUndesirableEffect": {
+        "identifier": [],
+        "codeableconcept": [
+            "symptomconditioneffect",
+            "classification",
+            "frequencyofoccurrence"
+        ],
+        "reference": [
+            "subject"
+        ]
+    },
+    "MessageDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "MessageHeader": {
+        "identifier": [],
+        "codeableconcept": [
+            "reason"
+        ],
+        "reference": [
+            "sender",
+            "enterer",
+            "author",
+            "responsible",
+            "focus"
+        ]
+    },
+    "MolecularSequence": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "patient",
+            "specimen",
+            "device",
+            "performer",
+            "pointer"
+        ]
+    },
+    "NamingSystem": {
+        "identifier": [],
+        "codeableconcept": [
+            "type",
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "NutritionOrder": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "foodpreferencemodifier",
+            "excludefoodmodifier"
+        ],
+        "reference": [
+            "patient",
+            "encounter",
+            "orderer",
+            "allergyintolerance"
+        ]
+    },
+    "Observation": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "code",
+            "valuecodeableconcept",
+            "dataabsentreason",
+            "interpretation",
+            "bodysite",
+            "method"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "subject",
+            "focus",
+            "encounter",
+            "performer",
+            "specimen",
+            "device",
+            "hasmember",
+            "derivedfrom"
+        ]
+    },
+    "ObservationDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "code",
+            "method"
+        ],
+        "reference": [
+            "validcodedvalueset",
+            "normalcodedvalueset",
+            "abnormalcodedvalueset",
+            "criticalcodedvalueset"
+        ]
+    },
+    "OperationDefinition": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "OperationOutcome": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "Organization": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "partof",
+            "endpoint"
+        ]
+    },
+    "OrganizationAffiliation": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "specialty"
+        ],
+        "reference": [
+            "organization",
+            "participatingorganization",
+            "network",
+            "location",
+            "healthcareservice",
+            "endpoint"
+        ]
+    },
+    "Parameters": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "Patient": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "maritalstatus"
+        ],
+        "reference": [
+            "generalpractitioner",
+            "managingorganization"
+        ]
+    },
+    "PaymentNotice": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "paymentstatus"
+        ],
+        "reference": [
+            "request",
+            "response",
+            "provider",
+            "payment",
+            "payee",
+            "recipient"
+        ]
+    },
+    "PaymentReconciliation": {
+        "identifier": [
+            "identifier",
+            "paymentidentifier"
+        ],
+        "codeableconcept": [
+            "formcode"
+        ],
+        "reference": [
+            "paymentissuer",
+            "request",
+            "requestor"
+        ]
+    },
+    "Person": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "managingorganization"
+        ]
+    },
+    "PlanDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "subjectreference"
+        ]
+    },
+    "Practitioner": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "communication"
+        ],
+        "reference": []
+    },
+    "PractitionerRole": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "specialty"
+        ],
+        "reference": [
+            "practitioner",
+            "organization",
+            "location",
+            "healthcareservice",
+            "endpoint"
+        ]
+    },
+    "Procedure": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "category",
+            "code",
+            "reasoncode",
+            "bodysite",
+            "outcome",
+            "complication",
+            "followup",
+            "usedcode"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "subject",
+            "encounter",
+            "recorder",
+            "asserter",
+            "location",
+            "reasonreference",
+            "report",
+            "complicationdetail",
+            "usedreference"
+        ]
+    },
+    "Provenance": {
+        "identifier": [],
+        "codeableconcept": [
+            "reason",
+            "activity"
+        ],
+        "reference": [
+            "target",
+            "location"
+        ]
+    },
+    "Questionnaire": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "QuestionnaireResponse": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "basedon",
+            "partof",
+            "subject",
+            "encounter",
+            "author",
+            "source"
+        ]
+    },
+    "RelatedPerson": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "relationship"
+        ],
+        "reference": [
+            "patient"
+        ]
+    },
+    "RequestGroup": {
+        "identifier": [
+            "identifier",
+            "groupidentifier"
+        ],
+        "codeableconcept": [
+            "code",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "replaces",
+            "subject",
+            "encounter",
+            "author",
+            "reasonreference"
+        ]
+    },
+    "ResearchDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "subjectreference",
+            "population",
+            "exposure",
+            "exposurealternative",
+            "outcome"
+        ]
+    },
+    "ResearchElementDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "subjectcodeableconcept",
+            "jurisdiction",
+            "topic"
+        ],
+        "reference": [
+            "subjectreference"
+        ]
+    },
+    "ResearchStudy": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "primarypurposetype",
+            "phase",
+            "category",
+            "focus",
+            "condition",
+            "keyword",
+            "location",
+            "reasonstopped"
+        ],
+        "reference": [
+            "protocol",
+            "partof",
+            "enrollment",
+            "sponsor",
+            "principalinvestigator",
+            "site"
+        ]
+    },
+    "ResearchSubject": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "study",
+            "individual",
+            "consent"
+        ]
+    },
+    "RiskAssessment": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "method",
+            "code",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "parent",
+            "subject",
+            "encounter",
+            "condition",
+            "performer",
+            "reasonreference",
+            "basis"
+        ]
+    },
+    "RiskEvidenceSynthesis": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction",
+            "topic",
+            "synthesistype",
+            "studytype"
+        ],
+        "reference": [
+            "population",
+            "exposure",
+            "outcome"
+        ]
+    },
+    "Schedule": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "servicecategory",
+            "servicetype",
+            "specialty"
+        ],
+        "reference": [
+            "actor"
+        ]
+    },
+    "SearchParameter": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "ServiceRequest": {
+        "identifier": [
+            "identifier",
+            "requisition"
+        ],
+        "codeableconcept": [
+            "category",
+            "code",
+            "orderdetail",
+            "asneededcodeableconcept",
+            "performertype",
+            "locationcode",
+            "reasoncode",
+            "bodysite"
+        ],
+        "reference": [
+            "basedon",
+            "replaces",
+            "subject",
+            "encounter",
+            "requester",
+            "performer",
+            "locationreference",
+            "reasonreference",
+            "insurance",
+            "supportinginfo",
+            "specimen",
+            "relevanthistory"
+        ]
+    },
+    "Slot": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "servicecategory",
+            "servicetype",
+            "specialty",
+            "appointmenttype"
+        ],
+        "reference": [
+            "schedule"
+        ]
+    },
+    "Specimen": {
+        "identifier": [
+            "identifier",
+            "accessionidentifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "condition"
+        ],
+        "reference": [
+            "subject",
+            "parent",
+            "request"
+        ]
+    },
+    "SpecimenDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "typecollected",
+            "patientpreparation",
+            "collection"
+        ],
+        "reference": []
+    },
+    "StructureDefinition": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "StructureMap": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "Subscription": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "Substance": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "code"
+        ],
+        "reference": []
+    },
+    "SubstanceNucleicAcid": {
+        "identifier": [],
+        "codeableconcept": [
+            "sequencetype",
+            "oligonucleotidetype"
+        ],
+        "reference": []
+    },
+    "SubstancePolymer": {
+        "identifier": [],
+        "codeableconcept": [
+            "class",
+            "geometry",
+            "copolymerconnectivity"
+        ],
+        "reference": []
+    },
+    "SubstanceProtein": {
+        "identifier": [],
+        "codeableconcept": [
+            "sequencetype"
+        ],
+        "reference": []
+    },
+    "SubstanceReferenceInformation": {
+        "identifier": [],
+        "codeableconcept": [],
+        "reference": []
+    },
+    "SubstanceSourceMaterial": {
+        "identifier": [
+            "organismid",
+            "parentsubstanceid"
+        ],
+        "codeableconcept": [
+            "sourcematerialclass",
+            "sourcematerialtype",
+            "sourcematerialstate",
+            "countryoforigin",
+            "developmentstage"
+        ],
+        "reference": []
+    },
+    "SubstanceSpecification": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type",
+            "status",
+            "domain"
+        ],
+        "reference": [
+            "source",
+            "referenceinformation",
+            "nucleicacid",
+            "polymer",
+            "protein",
+            "sourcematerial"
+        ]
+    },
+    "SupplyDelivery": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "type"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "patient",
+            "supplier",
+            "destination",
+            "receiver"
+        ]
+    },
+    "SupplyRequest": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "category",
+            "itemcodeableconcept",
+            "reasoncode"
+        ],
+        "reference": [
+            "itemreference",
+            "requester",
+            "supplier",
+            "reasonreference",
+            "deliverfrom",
+            "deliverto"
+        ]
+    },
+    "Task": {
+        "identifier": [
+            "identifier",
+            "groupidentifier"
+        ],
+        "codeableconcept": [
+            "statusreason",
+            "businessstatus",
+            "code",
+            "performertype",
+            "reasoncode"
+        ],
+        "reference": [
+            "basedon",
+            "partof",
+            "focus",
+            "for",
+            "encounter",
+            "requester",
+            "owner",
+            "location",
+            "reasonreference",
+            "insurance",
+            "relevanthistory"
+        ]
+    },
+    "TerminologyCapabilities": {
+        "identifier": [],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "TestReport": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "testscript"
+        ]
+    },
+    "TestScript": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": [
+            "profile"
+        ]
+    },
+    "ValueSet": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [
+            "jurisdiction"
+        ],
+        "reference": []
+    },
+    "VerificationResult": {
+        "identifier": [],
+        "codeableconcept": [
+            "need",
+            "validationtype",
+            "validationprocess",
+            "failureaction"
+        ],
+        "reference": [
+            "target"
+        ]
+    },
+    "VisionPrescription": {
+        "identifier": [
+            "identifier"
+        ],
+        "codeableconcept": [],
+        "reference": [
+            "patient",
+            "encounter",
+            "prescriber"
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+.env
+test_data
+v2
+.vscode
+images
+README.md
+test_runner.py
+
+# Testing (not needed in production image)
+tests/
+pytest.ini
+.coveragerc
+requirements-dev.txt
+test_results.txt
+test_results/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# Claude Code
+.claude/
+
+# Git
+.git/
+.gitignore

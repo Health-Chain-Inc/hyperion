@@ -1,0 +1,215 @@
+# Hybrid Azure deployment for Hyperion
+# ─────────────────────────────────────────────────────────────────────────────
+# Brings up the Hyperion Engine locally (in containers) wired to your
+# Azure-managed FHIR, Service Bus, and Blob Storage. Suitable for
+# evaluation, PoC, and small-scale workloads. For production-grade
+# deployments, see the parent README's "Going to production" section.
+#
+# Stack:
+#   • starrocks-fe + starrocks-cn   Hyperion Engine, shared-data mode.
+#                                   Table data persists in YOUR Azure Blob
+#                                   container (no MinIO needed).
+#   • hyperion-util                 One-shot bootstrap of the engine schema
+#                                   (storage volume, _hyperion_core_,
+#                                   _hyperion_audit_, FHIR tables, service
+#                                   account). Idempotent; exits 0.
+#   • 6 core processors             core-data-ingester, batch-load-exporter,
+#                                   event-load-exporter, batch-scheduler,
+#                                   audit-lineage-manager, retry-manager.
+#                                   All same image (hyperion/core:local),
+#                                   differ only by APPLICATION_NAME. No
+#                                   sidecars by default.
+#
+# What you bring (provision in Azure first — NOT done by this compose):
+#   1. Azure Health Data Services FHIR endpoint
+#   2. Azure Service Bus namespace + 4 queues
+#      (event, batch, retry, audit — names from core/README.md)
+#   3. Azure Blob Storage account + containers
+#      (silver-layer / stage / failure / metadata-backup)
+#
+# Setup:
+#   cp .env.example .env
+#   # Set:   FHIR_SERVICE=azure  CLOUD_STORAGE=azure  SERVICEBUS=azure
+#   # Fill:  AZURE_FHIR_SERVER_*, AZURE_SERVICEBUS_*, AZURE_STORAGE_*,
+#   #        AZURE_BLOB_STORAGE_* blocks
+#   docker compose -f docker-compose.azure.yml up
+#
+# Reset (drops engine state but NOT your Azure-side data):
+#   docker compose -f docker-compose.azure.yml down
+
+services:
+  # ───────────────── Hyperion Engine (StarRocks 3.4 shared-data) ─────────────────
+  # Storage volume points at YOUR Azure Blob (configured by hyperion-util
+  # at bootstrap, using AZURE_BLOB_STORAGE_* env vars from .env).
+  # cloud_native_storage_type and util's storage-volume TYPE are kept in
+  # sync via the AZURE_BLOB_STORAGE_VERSION env var (1=AZBLOB, 2=ADLS2).
+  starrocks-fe:
+    image: starrocks/fe-ubuntu:3.4.10
+    container_name: hyperion-starrocks-fe
+    hostname: starrocks-fe
+    user: root
+    environment:
+      AZURE_BLOB_STORAGE_VERSION: ${AZURE_BLOB_STORAGE_VERSION:-2}
+    command:
+      - /bin/bash
+      - -c
+      - |
+        if [ "$$AZURE_BLOB_STORAGE_VERSION" = "2" ]; then
+          STORAGE_TYPE=ADLS2
+        else
+          STORAGE_TYPE=AZBLOB
+        fi
+        echo "# shared-data run mode" >> /opt/starrocks/fe/conf/fe.conf
+        echo "run_mode = shared_data" >> /opt/starrocks/fe/conf/fe.conf
+        echo "cloud_native_storage_type = $$STORAGE_TYPE" >> /opt/starrocks/fe/conf/fe.conf
+        /opt/starrocks/fe/bin/start_fe.sh --host_type FQDN
+    ports:
+      - "9030:9030"   # MySQL protocol
+      - "8030:8030"   # HTTP (stream-load entry)
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u root -h starrocks-fe -P 9030 -e 'show frontends\\G' | grep 'Alive: true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  starrocks-cn:
+    image: starrocks/cn-ubuntu:3.4.10
+    container_name: hyperion-starrocks-cn
+    hostname: starrocks-cn
+    user: root
+    depends_on:
+      starrocks-fe:
+        condition: service_healthy
+    environment:
+      - HOST_TYPE=FQDN
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sleep 5
+        ulimit -u 65535
+        ulimit -n 65535
+        mysql --connect-timeout 5 -h starrocks-fe -P9030 -uroot -e \
+          "ALTER SYSTEM ADD COMPUTE NODE \"starrocks-cn:9050\";" || true
+        /opt/starrocks/cn/bin/start_cn.sh
+    ports:
+      - "8040:8040"   # CN HTTP (stream-load redirect target)
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u root -h starrocks-fe -P 9030 -e 'SHOW COMPUTE NODES\\G' | grep 'Alive: true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  # ───────────────── One-shot engine bootstrap ─────────────────
+  hyperion-util:
+    build: ./util
+    image: hyperion/util:local
+    container_name: hyperion-util-bootstrap
+    depends_on:
+      starrocks-fe:
+        condition: service_healthy
+      starrocks-cn:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+    command: ["python", "main.py", "bootstrap"]
+    restart: "no"
+
+  # ───────────────── Core application processors (6, no sidecars) ─────────────────
+  # All share hyperion/core:local; differ only by APPLICATION_NAME.
+  # Every processor carries `build: ./core` so `docker compose up --build` builds
+  # the local image (the repeats are instant cache hits) and no processor ever
+  # falls back to pulling hyperion/core:local from a registry.
+  core-data-ingester:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-core-data-ingester
+    depends_on:
+      hyperion-util:
+        condition: service_completed_successfully
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: core-data-ingester
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped
+
+  batch-load-exporter:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-batch-load-exporter
+    depends_on:
+      core-data-ingester:
+        condition: service_started
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: batch-load-exporter
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped
+
+  event-load-exporter:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-event-load-exporter
+    depends_on:
+      core-data-ingester:
+        condition: service_started
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: event-load-exporter
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped
+
+  batch-scheduler:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-batch-scheduler
+    depends_on:
+      core-data-ingester:
+        condition: service_started
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: batch-scheduler
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped
+
+  audit-lineage-manager:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-audit-lineage-manager
+    depends_on:
+      core-data-ingester:
+        condition: service_started
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: audit-lineage-manager
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped
+
+  retry-manager:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-retry-manager
+    depends_on:
+      core-data-ingester:
+        condition: service_started
+    env_file:
+      - ./.env
+    environment:
+      APPLICATION_NAME: retry-manager
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+    restart: unless-stopped

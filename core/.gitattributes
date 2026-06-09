@@ -1,0 +1,5 @@
+# Shell scripts must always have LF line endings, regardless of OS.
+# Without this, Windows contributors' git checkout produces CRLF, which
+# breaks Docker entrypoints on Linux: "/bin/sh\r: no such file or directory".
+*.sh        text eol=lf
+entrypoint.sh text eol=lf

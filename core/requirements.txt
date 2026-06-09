@@ -1,0 +1,14 @@
+requests==2.33.0
+pandas==2.2.3
+azure-storage-blob==12.17.0
+python-dotenv==1.2.2
+openpyxl==3.1.2
+azure-servicebus==7.11.2
+sqlalchemy[asyncio]==2.0.46
+pymysql==1.1.2
+configparser==7.1.0
+beautifulsoup4==4.12.3
+setuptools==80.10.2
+tailer==0.4.1
+cryptography==46.0.7
+apscheduler==3.11.2

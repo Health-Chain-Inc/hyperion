@@ -1,0 +1,13 @@
+Hyperion
+Copyright 2026 HealthChain Inc.
+
+This product includes the HL7® FHIR® R4 JSON Schema and resource definitions
+(http://hl7.org/fhir/), © HL7 International, licensed under CC0 1.0.
+HL7® and FHIR® are registered trademarks of Health Level Seven International.
+
+The local demo downloads Synthea™ (https://github.com/synthetichealth/synthea,
+Apache License 2.0) at runtime; Synthea is not distributed with this repository.
+
+The Hyperion Engine is StarRocks 3.4 (https://github.com/StarRocks/starrocks,
+Apache License 2.0), run as a container image pulled at runtime; StarRocks is not
+distributed with this repository.

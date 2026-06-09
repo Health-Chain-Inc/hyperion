@@ -1,0 +1,119 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-test-2",
+  "meta": {
+    "extension": [
+      {
+        "url": "urn:Recorded_Date_Time_UTC",
+        "valueString": "2024-11-08T14:07:13Z"
+      },
+      {
+        "url": "urn:CCDFileName",
+        "valueString": "Saul605_Kohler843_6db97787-7716-9fc4-79ad-e34ea6c08dc6.xml"
+      },
+      {
+        "url": "urn:FHIR",
+        "valueString": "Synthea_Patient_0202061d-d7d1-48bc-9849-17da4a6b7e9b_2024-11-8.json"
+      }
+    ],
+    "versionId": "7",
+    "lastUpdated": "2024-11-08T14:11:48.876+00:00",
+    "profile": [
+      "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
+    ]
+  },
+  "extension": [
+    {
+      "extension": [
+        {
+          "url": "ombCategory",
+          "valueCoding": {
+            "code": "2106-3",
+            "display": "white"
+          }
+        },
+        {
+          "url": "text",
+          "valueString": "white"
+        }
+      ],
+      "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+    },
+    {
+      "extension": [
+        {
+          "url": "ombCategory",
+          "valueCoding": {
+            "code": "2186-5",
+            "display": "non-hispanic"
+          }
+        },
+        {
+          "url": "text",
+          "valueString": "non-hispanic"
+        }
+      ],
+      "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+    }
+  ],
+  "identifier": [
+    {
+      "system": "urn:Source",
+      "value": "Syntheia"
+    },
+    {
+      "system": "urn:PATIENT_ID",
+      "value": "5d8bcd58-e542-d8e9-45c4-5caa377b1926"
+    },
+    {
+      "system": "urn:oid:2.16.840.1.113883.19.5",
+      "value": "5d8bcd58-e542-d8e9-45c4-5caa377b1926",
+      "assigner": {
+        "display": "https://github.com/synthetichealth/synthea"
+      }
+    },
+    {
+      "system": "urn:SUBSCRIBER_ID",
+      "value": "5d8bcd58-e542-d8e9-45c4-5caa377b1926"
+    }
+  ],
+  "name": [
+    {
+      "family": "Kohler843",
+      "given": [
+        "Saul605"
+      ]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1946-01-21",
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "497 Ryan Union"
+      ],
+      "city": "San Antonio",
+      "state": "Texas",
+      "postalCode": "78154"
+    }
+  ],
+  "communication": [
+    {
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "en-us",
+            "display": "English (United States)"
+          }
+        ]
+      }
+    }
+  ],
+  "generalPractitioner": [
+    {
+      "reference": "Organization/2"
+    }
+  ]
+}

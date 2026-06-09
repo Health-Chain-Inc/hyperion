@@ -1,0 +1,105 @@
+{
+    "resourceType": "CarePlan",
+    "id": "6908fe38-a5e1-4bce-c51c-6df90f81a928",
+    "meta": {
+        "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan"
+        ]
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Care Plan for Self-care interventions (procedure).<br/>Activities: <ul><li>Self-care interventions (procedure)</li><li>Self-care interventions (procedure)</li><li>Self-care interventions (procedure)</li></ul></div>"
+    },
+    "status": "active",
+    "intent": "order",
+    "category": [
+        {
+            "coding": [
+                {
+                    "system": "http://hl7.org/fhir/us/core/CodeSystem/careplan-category",
+                    "code": "assess-plan"
+                }
+            ]
+        },
+        {
+            "coding": [
+                {
+                    "system": "http://snomed.info/sct",
+                    "code": "384758001",
+                    "display": "Self-care interventions (procedure)"
+                }
+            ],
+            "text": "Self-care interventions (procedure)"
+        }
+    ],
+    "subject": {
+        "reference": "urn:uuid:b0a06ead-cc42-aa48-dad6-841d4aa679fa"
+    },
+    "encounter": {
+        "reference": "urn:uuid:a889805b-20ca-0ba6-5b5c-e617ce99b0cc"
+    },
+    "period": {
+        "start": "1954-04-03T12:14:47-05:00"
+    },
+    "careTeam": [
+        {
+            "reference": "urn:uuid:8282e1ff-a27b-d69a-80c1-b574dfbe2b42"
+        }
+    ],
+    "activity": [
+        {
+            "detail": {
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "409002",
+                            "display": "Food allergy diet"
+                        }
+                    ],
+                    "text": "Food allergy diet"
+                },
+                "status": "in-progress",
+                "location": {
+                    "display": "MOUNT AUBURN HOSPITAL"
+                }
+            }
+        },
+        {
+            "detail": {
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "58332002",
+                            "display": "Allergy education"
+                        }
+                    ],
+                    "text": "Allergy education"
+                },
+                "status": "in-progress",
+                "location": {
+                    "display": "MOUNT AUBURN HOSPITAL"
+                }
+            }
+        },
+        {
+            "detail": {
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://snomed.info/sct",
+                            "code": "58332002",
+                            "display": "Allergy education"
+                        }
+                    ],
+                    "text": "Allergy education"
+                },
+                "status": "in-progress",
+                "location": {
+                    "display": "MOUNT AUBURN HOSPITAL"
+                }
+            }
+        }
+    ]
+}

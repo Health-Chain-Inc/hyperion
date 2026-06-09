@@ -1,0 +1,64 @@
+# Security - prevent secrets in container
+.env
+.env.*
+.env.local
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets/
+
+# Git and CI
+.git/
+.gitignore
+.gitlab-ci.yml
+.github/
+
+# Documentation and tests
+*.md
+README*
+docs/
+tests/
+test/
+coverage/
+
+# Docker files (prevent recursion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Python
+__pycache__/
+.venv/
+venv/
+env/
+ENV/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project specific
+scrapper.py
+*.csv

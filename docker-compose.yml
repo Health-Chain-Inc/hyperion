@@ -1,0 +1,335 @@
+# Hyperion mono-repo local-demo compose
+# ─────────────────────────────────────────────────────────────────────────────
+# Brings up the full local stack:
+#   MinIO (storage backend for engine's shared-data volume)
+#   ↓
+#   StarRocks 3.4 in shared-data mode  (FE + CN with --host_type FQDN)
+#   ↓
+#   HAPI FHIR  ← seeded with 10 Synthea-generated patient bundles
+#   ↓
+#   hyperion-util (one-shot bootstrap: storage volume, DBs, FHIR tables)
+#   ↓
+#   hyperion-core (long-running pipeline: HAPI → normalize → engine)
+#
+# First run takes ~5-10 min (StarRocks startup, HAPI cold start, Synthea
+# generation). Subsequent runs are ~2-3 min (volumes cached).
+#
+# Reset:   docker compose down -v
+# Logs:    docker compose logs <service>
+# Query:   docker exec -it hyperion-starrocks-fe \
+#            mysql -h 127.0.0.1 -P 9030 -u root
+
+services:
+  # ───────────────── Storage ─────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: hyperion-minio
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # web console (root:minioadmin/minioadmin123)
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: hyperion-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 minioadmin minioadmin123 &&
+      mc mb local/hyperion --ignore-existing &&
+      echo 'Bucket hyperion ready'
+      "
+    restart: "no"
+
+  # ───────────────── Hyperion Engine (StarRocks 3.4 shared-data) ─────────────────
+  starrocks-fe:
+    image: starrocks/fe-ubuntu:3.4.10
+    container_name: hyperion-starrocks-fe
+    hostname: starrocks-fe
+    user: root
+    depends_on:
+      minio:
+        condition: service_healthy
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo "# shared-data run mode" >> /opt/starrocks/fe/conf/fe.conf
+        echo "run_mode = shared_data" >> /opt/starrocks/fe/conf/fe.conf
+        echo "cloud_native_storage_type = S3" >> /opt/starrocks/fe/conf/fe.conf
+        /opt/starrocks/fe/bin/start_fe.sh --host_type FQDN
+    ports:
+      - "9030:9030"   # MySQL protocol
+      - "8030:8030"   # HTTP (stream-load entry)
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u root -h starrocks-fe -P 9030 -e 'show frontends\\G' | grep 'Alive: true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  starrocks-cn:
+    image: starrocks/cn-ubuntu:3.4.10
+    container_name: hyperion-starrocks-cn
+    hostname: starrocks-cn
+    user: root
+    depends_on:
+      starrocks-fe:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      - HOST_TYPE=FQDN
+    command:
+      - /bin/bash
+      - -c
+      - |
+        sleep 5
+        ulimit -u 65535
+        ulimit -n 65535
+        mysql --connect-timeout 5 -h starrocks-fe -P9030 -uroot -e \
+          "ALTER SYSTEM ADD COMPUTE NODE \"starrocks-cn:9050\";" || true
+        /opt/starrocks/cn/bin/start_cn.sh
+    ports:
+      - "8040:8040"   # CN HTTP (stream-load redirect target)
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -u root -h starrocks-fe -P 9030 -e 'SHOW COMPUTE NODES\\G' | grep 'Alive: true'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  # ───────────────── HAPI FHIR (data source) ─────────────────
+  # hapiproject/hapi is distroless — no shell, no curl — so the readiness
+  # probe is delegated to the hapi-wait sidecar below.
+  #
+  # HAPI uses in-memory H2 by default; data is lost on `docker compose down`.
+  # (We previously tried mounting /data to a named volume for persistence,
+  # but the distroless image's non-root user can't write to a root-owned
+  # volume mount and HAPI fails to start with AccessDeniedException.)
+  hapi-fhir:
+    image: hapiproject/hapi:latest
+    container_name: hyperion-hapi-fhir
+    ports:
+      - "8080:8080"
+
+  hapi-wait:
+    image: curlimages/curl:latest
+    container_name: hyperion-hapi-wait
+    depends_on:
+      hapi-fhir:
+        condition: service_started
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        echo "Waiting for HAPI FHIR /metadata to respond..."
+        attempts=0
+        until curl -sf -o /dev/null http://hapi-fhir:8080/fhir/metadata; do
+          attempts=$$((attempts+1))
+          if [ "$$attempts" -gt 240 ]; then
+            echo "HAPI did not become ready within 20 minutes."
+            exit 1
+          fi
+          if [ $$((attempts % 12)) -eq 0 ]; then
+            echo "  still waiting ($$attempts attempts, ~$$((attempts*5/60)) min elapsed)..."
+          fi
+          sleep 5
+        done
+        echo "HAPI FHIR is ready (after $$attempts attempts)."
+    restart: "no"
+
+  # ───────────────── Synthea seed data ─────────────────
+  # Generates synthetic patients with realistic medical histories so the
+  # engine ends up with data after core pulls. Synthea jar (~30 MB) is
+  # downloaded once and cached in the synthea-output volume. Live generation
+  # is single-threaded JVM: ~60-90s for 10 patients on a typical laptop.
+  #
+  # Hospital and Practitioner bundles are enabled by default — patient
+  # bundles reference them by NPI/identifier match URLs. Loading the two
+  # side-bundles before patient bundles lets HAPI's match-URL resolution
+  # succeed (this is the same approach Medplum and other FHIR servers
+  # document for ingesting Synthea data).
+  synthea-generator:
+    image: eclipse-temurin:17-jre-alpine
+    container_name: hyperion-synthea-generator
+    volumes:
+      - synthea-output:/output
+    environment:
+      SYNTHEA_PATIENT_COUNT: ${SYNTHEA_PATIENT_COUNT:-10}
+      SYNTHEA_SEED: ${SYNTHEA_SEED:-12345}
+      SYNTHEA_VERSION: ${SYNTHEA_VERSION:-3.3.0}
+      SYNTHEA_INCLUDE_HOSPITAL: ${SYNTHEA_INCLUDE_HOSPITAL:-true}
+      SYNTHEA_INCLUDE_PRACTITIONER: ${SYNTHEA_INCLUDE_PRACTITIONER:-true}
+      SYNTHEA_ONLY_ALIVE: ${SYNTHEA_ONLY_ALIVE:-true}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        cd /output
+        JAR="synthea-$$SYNTHEA_VERSION.jar"
+        if [ ! -f "$$JAR" ]; then
+          echo "Downloading Synthea v$$SYNTHEA_VERSION..."
+          wget -q "https://github.com/synthetichealth/synthea/releases/download/v$$SYNTHEA_VERSION/synthea-with-dependencies.jar" -O "$$JAR"
+        else
+          echo "Synthea $$JAR already cached, skipping download."
+        fi
+        # Skip regeneration if bundles already present (subsequent runs after
+        # `docker compose down` without -v). Force regen with `down -v`.
+        if ls /output/fhir/*.json >/dev/null 2>&1; then
+          echo "Synthea bundles already present in /output/fhir, skipping regeneration."
+          ls -lh /output/fhir/ | head -15
+          exit 0
+        fi
+        echo "Generating $$SYNTHEA_PATIENT_COUNT patients (seed=$$SYNTHEA_SEED, only_alive=$$SYNTHEA_ONLY_ALIVE, hospital=$$SYNTHEA_INCLUDE_HOSPITAL, practitioner=$$SYNTHEA_INCLUDE_PRACTITIONER)..."
+        rm -rf /output/fhir
+        java -jar "$$JAR" \
+          -p "$$SYNTHEA_PATIENT_COUNT" \
+          -s "$$SYNTHEA_SEED" \
+          --exporter.fhir.export=true \
+          --exporter.fhir.transaction_bundle=true \
+          --exporter.hospital.fhir.export="$$SYNTHEA_INCLUDE_HOSPITAL" \
+          --exporter.practitioner.fhir.export="$$SYNTHEA_INCLUDE_PRACTITIONER" \
+          --generate.only_alive_patients="$$SYNTHEA_ONLY_ALIVE" \
+          --exporter.baseDirectory=/output
+        echo "Synthea output:"
+        ls -lh /output/fhir/ | head -30
+    restart: "no"
+
+  # Loads Synthea bundles into HAPI in dependency order:
+  #   1. hospitalInformation*.json  (Organizations + Locations)
+  #   2. practitionerInformation*.json  (Practitioners + PractitionerRoles)
+  #   3. patient bundles  (everything else, each a transaction bundle)
+  # Patient bundles reference Organizations/Practitioners via NPI match URLs.
+  # Loading the two side-bundles first ensures HAPI's match-URL resolution
+  # finds the targets when processing patient transactions.
+  synthea-loader:
+    image: curlimages/curl:latest
+    container_name: hyperion-synthea-loader
+    depends_on:
+      hapi-wait:
+        condition: service_completed_successfully
+      synthea-generator:
+        condition: service_completed_successfully
+    volumes:
+      - synthea-output:/data:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        cd /data/fhir
+
+        # Skip load if HAPI already has patients (subsequent runs after
+        # `docker compose down` without -v reuse the persisted h2 database).
+        existing=$$(curl -sf 'http://hapi-fhir:8080/fhir/Patient?_summary=count' 2>/dev/null | sed -n 's/.*"total"[^0-9]*\([0-9]\+\).*/\1/p' | head -1)
+        if [ "$${existing:-0}" -gt 0 ]; then
+          echo "HAPI already has $$existing patient(s), skipping load."
+          echo "(Use 'docker compose down -v' to wipe and reload.)"
+          exit 0
+        fi
+
+        # Ordered load: hospital first, practitioner second, patient bundles last.
+        hospital_files=$$(ls hospitalInformation*.json 2>/dev/null || true)
+        practitioner_files=$$(ls practitionerInformation*.json 2>/dev/null || true)
+        patient_files=$$(ls *.json 2>/dev/null | grep -vE '^(hospitalInformation|practitionerInformation)' || true)
+
+        load_bundle() {
+          local f="$$1"
+          if curl -sf --max-time 120 -X POST http://hapi-fhir:8080/fhir \
+              -H 'Content-Type: application/fhir+json' \
+              --data-binary @"$$f" \
+              -o /tmp/last_response.json; then
+            echo "  OK   $$f"
+            return 0
+          else
+            echo "  FAIL $$f"
+            [ -f /tmp/last_response.json ] && head -c 400 /tmp/last_response.json && echo ""
+            return 1
+          fi
+        }
+
+        loaded=0
+        failed=0
+
+        echo "--- Stage 1: Hospital bundles ---"
+        for f in $$hospital_files; do
+          if load_bundle "$$f"; then loaded=$$((loaded+1)); else failed=$$((failed+1)); fi
+        done
+
+        echo "--- Stage 2: Practitioner bundles ---"
+        for f in $$practitioner_files; do
+          if load_bundle "$$f"; then loaded=$$((loaded+1)); else failed=$$((failed+1)); fi
+        done
+
+        echo "--- Stage 3: Patient bundles ---"
+        for f in $$patient_files; do
+          if load_bundle "$$f"; then loaded=$$((loaded+1)); else failed=$$((failed+1)); fi
+        done
+
+        echo "Synthea load complete: $$loaded bundles loaded, $$failed failed."
+        # Treat as success if at least one bundle landed
+        [ "$$loaded" -gt 0 ]
+    restart: "no"
+
+  # ───────────────── hyperion-util (one-shot engine bootstrap) ─────────────────
+  hyperion-util:
+    build: ./util
+    image: hyperion/util:local
+    container_name: hyperion-util-bootstrap
+    depends_on:
+      starrocks-fe:
+        condition: service_healthy
+      starrocks-cn:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+      hapi-wait:
+        condition: service_completed_successfully
+    env_file:
+      - ./.env
+    environment:
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      LOCAL_STORAGE_ENDPOINT: http://minio:9000
+      FHIR_SERVER_URL: http://hapi-fhir:8080/fhir
+    command: ["python", "main.py", "bootstrap"]
+    restart: "no"
+
+  # ───────────────── hyperion-core (long-running pipeline) ─────────────────
+  hyperion-core:
+    build: ./core
+    image: hyperion/core:local
+    container_name: hyperion-core-pipeline
+    depends_on:
+      hyperion-util:
+        condition: service_completed_successfully
+      synthea-loader:
+        condition: service_completed_successfully
+    env_file:
+      - ./.env
+    environment:
+      SILVER_LAYER_QUERY_SERVER: starrocks-fe:9030
+      SILVER_LAYER_HTTP_SERVER: starrocks-fe:8030
+      FHIR_SERVER_URL: http://hapi-fhir:8080/fhir
+      CLOUD_STORAGE: local
+      SERVICEBUS: local
+      FHIR_SERVICE: local
+      APPLICATION_NAME: core-data-ingester
+
+volumes:
+  minio_data:
+  synthea-output:

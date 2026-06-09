@@ -1,0 +1,19 @@
+# Ruff configuration for Hyperion.
+# Scope is intentionally correctness-focused, not style: we enforce real-bug
+# rules (pyflakes, bugbear) and skip whitespace/line-length formatting so the
+# gate stays meaningful and low-noise. Style/formatting is tracked separately.
+target-version = "py311"
+
+[lint]
+# E9  syntax errors
+# F   pyflakes — undefined names, unused imports/vars, f-string mistakes
+# B   flake8-bugbear — likely bugs (missing raise-from, zip without strict, ...)
+select = ["E9", "F", "B"]
+
+[lint.per-file-ignores]
+# Tests legitimately use patterns the bug rules flag:
+#   S101  assert — pytest's core mechanism
+#   F811  redefined — pytest fixture / parametrize re-import patterns
+#   B017  pytest.raises(Exception) — intentional broad-exception assertions
+"**/tests/**" = ["S101", "F811", "B017"]
+"**/conftest.py" = ["S101", "F811"]
