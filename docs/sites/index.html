@@ -34,6 +34,27 @@
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="styles.css" />
 
+  <!-- Analytics: GA4 + Consent Mode v2. Loads only on the canonical Pages host (forks/local never report) AND only after the visitor accepts. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { 'ad_storage':'denied', 'ad_user_data':'denied', 'ad_personalization':'denied', 'analytics_storage':'denied' });
+    window.__loadGA = function () {
+      if (window.__gaLoaded || location.hostname !== 'health-chain-inc.github.io') return;
+      window.__gaLoaded = true;
+      gtag('consent', 'update', { 'analytics_storage':'granted' });
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-M7NSZF2RD1';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-M7NSZF2RD1');
+    };
+    if (location.hostname === 'health-chain-inc.github.io' && localStorage.getItem('hyperion-analytics-consent') === 'granted') {
+      window.__loadGA();
+    }
+  </script>
+
   <!-- Structured data: software -->
   <script type="application/ld+json">
   {
@@ -329,7 +350,34 @@ a1b2  female  1984-03-11  ["Reyes"]</code></pre>
       the deploying organization.
     </p>
     <p class="copyright">© 2026 · Open source under the Apache 2.0 license</p>
+    <p class="copyright">Traffic is measured with Google Analytics, loaded only after you accept the consent prompt.</p>
   </footer>
+
+  <div id="consent-banner" class="consent-banner" hidden role="dialog" aria-label="Analytics consent">
+    <p>We use Google Analytics to measure traffic and see how Hyperion is reaching people. Nothing is collected until you accept.</p>
+    <div class="consent-actions">
+      <button type="button" class="btn btn-primary" data-consent="granted">Accept</button>
+      <button type="button" class="btn btn-outline" data-consent="denied">Decline</button>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var KEY = 'hyperion-analytics-consent';
+      var banner = document.getElementById('consent-banner');
+      if (!banner) return;
+      // Only show where analytics can actually run (canonical host) and no choice made yet.
+      if (location.hostname === 'health-chain-inc.github.io' && !localStorage.getItem(KEY)) {
+        banner.hidden = false;
+      }
+      banner.addEventListener('click', function (e) {
+        var choice = e.target && e.target.getAttribute('data-consent');
+        if (!choice) return;
+        localStorage.setItem(KEY, choice);
+        banner.hidden = true;
+        if (choice === 'granted' && typeof window.__loadGA === 'function') window.__loadGA();
+      });
+    })();
+  </script>
 
   <script src="site.js" defer></script>
 </body>
