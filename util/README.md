@@ -21,11 +21,11 @@ This image is designed to be run **once** against a fresh engine, then exit. Re-
 
 ## What this utility does
 
-1. **Initialize storage volume** — creates a StarRocks storage volume backed by Azure ADLS / ADLS Gen2 (production) or MinIO over the S3 API (local demo).
-2. **Initialize core database** — creates the `_hyperion_core_` database.
-3. **Initialize audit database** — creates the `_hyperion_audit_` database for pipeline lineage and audit tables.
-4. **Create FHIR resource tables** — reads `schema/fhir.schema.json` and emits one flattened table per FHIR R4 resource type in the core database.
-5. **Create service-account user** — provisions the engine user that `hyperion-core` uses at runtime.
+1. **Initialize storage volume**: creates a StarRocks storage volume backed by Azure ADLS / ADLS Gen2 (production) or MinIO over the S3 API (local demo).
+2. **Initialize core database**: creates the `_hyperion_core_` database.
+3. **Initialize audit database**: creates the `_hyperion_audit_` database for pipeline lineage and audit tables.
+4. **Create FHIR resource tables**: reads `schema/fhir.schema.json` and emits one flattened table per FHIR R4 resource type in the core database.
+5. **Create service-account user**: provisions the engine user that `hyperion-core` uses at runtime.
 
 The utility exits after step 5. There is no long-running process.
 
@@ -33,7 +33,7 @@ The utility exits after step 5. There is no long-running process.
 
 ## Pre-requisites
 
-The bootstrap needs **both** the engine and a FHIR server reachable. The util queries the FHIR server's `/metadata` endpoint to discover which resource types the server supports — that list drives which tables get created.
+The bootstrap needs **both** the engine and a FHIR server reachable. The util queries the FHIR server's `/metadata` endpoint to discover which resource types the server supports. That list drives which tables get created.
 
 1. **Hyperion engine** (StarRocks 3.4+):
    - MySQL-protocol port (default `9030`)
@@ -45,20 +45,20 @@ The bootstrap needs **both** the engine and a FHIR server reachable. The util qu
    - Azure Health Data Services FHIR for production
    - Must expose a healthy `/metadata` endpoint *before* util runs
 
-For local development a one-command stack is provided in [`docker-compose.local-minio.yml`](docker-compose.local-minio.yml) — it brings up the infrastructure util needs:
+For local development a one-command stack is provided in [`docker-compose.local-minio.yml`](docker-compose.local-minio.yml). It brings up the infrastructure util needs:
 
-1. **MinIO** — S3-compatible storage backing the engine's shared-data volume.
+1. **MinIO**: S3-compatible storage backing the engine's shared-data volume.
 2. **Hyperion engine** (StarRocks shared-data mode) pointed at MinIO.
-3. **HAPI FHIR** — empty FHIR R4 server (util reads `/metadata` only — no data needed for the bootstrap).
-4. **hyperion-util** — one-shot. Runs `python main.py bootstrap` against the engine — storage volume, core / audit databases, FHIR resource tables, service account.
+3. **HAPI FHIR**: empty FHIR R4 server (util reads `/metadata` only, so no data is needed for the bootstrap).
+4. **hyperion-util**: one-shot. Runs `python main.py bootstrap` against the engine to create the storage volume, core / audit databases, FHIR resource tables, and service account.
 
-This stack validates that **util** works end-to-end. It does not seed HAPI with FHIR data — that's the parent mono-repo's `docker-compose.yml` responsibility, which orchestrates the full demo (util + Synthea data generation + HAPI loading + `hyperion-core` pipeline). When running the parent compose, util's role is unchanged: one-shot bootstrap, exits 0, gets out of the way.
+This stack validates that **util** works end-to-end. It does not seed HAPI with FHIR data; that's the parent mono-repo's `docker-compose.yml` responsibility, which orchestrates the full demo (util + Synthea data generation + HAPI loading + `hyperion-core` pipeline). When running the parent compose, util's role is unchanged: one-shot bootstrap, exits 0, gets out of the way.
 
 ---
 
 ## Quick start
 
-### Option A — Local demo (MinIO + engine + HAPI FHIR + util, one command)
+### Option A: Local demo (MinIO + engine + HAPI FHIR + util, one command)
 
 ```bash
 git clone https://github.com/Health-Chain-Inc/hyperion.git
@@ -67,13 +67,13 @@ cp .env.example .env
 docker compose -f docker-compose.local-minio.yml up --build
 ```
 
-This single command brings up MinIO, the engine, HAPI FHIR, then runs `hyperion-util` once (it exits 0 when the bootstrap is done) — the long-running services keep going. Inspect with `docker compose -f docker-compose.local-minio.yml ps`.
+This single command brings up MinIO, the engine, HAPI FHIR, then runs `hyperion-util` once (it exits 0 when the bootstrap is done), and the long-running services keep going. Inspect with `docker compose -f docker-compose.local-minio.yml ps`.
 
 After this finishes, the engine has `_hyperion_core_`, `_hyperion_audit_`, all FHIR tables, and the service-account user. `hyperion-core` (the pipeline) can be pointed at the same engine to load data.
 
-> Re-running is largely safe — the storage volume, resource tables, and service account are all existence-guarded. The two `CREATE DATABASE` statements are not yet guarded, so a re-run against an already-bootstrapped engine logs a benign "database already exists" error for those steps.
+> Re-running is largely safe: the storage volume, resource tables, and service account are all existence-guarded. The two `CREATE DATABASE` statements are not yet guarded, so a re-run against an already-bootstrapped engine logs a benign "database already exists" error for those steps.
 
-### Option B — Build and run against your own engine
+### Option B: Build and run against your own engine
 
 ```bash
 git clone https://github.com/Health-Chain-Inc/hyperion.git
@@ -87,7 +87,7 @@ docker run --rm --env-file .env hyperion/util:local
 
 ## Configuration
 
-All configuration is via environment variables — `config.ini` reads from `${VAR}` placeholders and `.env.example` documents every variable.
+All configuration is via environment variables: `config.ini` reads from `${VAR}` placeholders and `.env.example` documents every variable.
 
 > **Sharing `.env` with `hyperion-core`:** the same `.env` file works for both `util/` and `core/`. Util reads bootstrap-only vars (root credentials, schema flags) and core reads runtime-only vars (queue / Service Bus / Blob Storage), and both share the engine + FHIR connection vars. Keep one `.env` at the repo root (the parent compose uses it), or copy it into each directory for standalone runs.
 
@@ -96,7 +96,7 @@ Highlights:
 | Var | Purpose |
 |---|---|
 | `DEPLOYMENT_TYPE` | `local` or `azure` |
-| `FHIR_SERVICE` | `azure` (Azure Health Data Services) — set `DEPLOYMENT_TYPE=local` for HAPI FHIR / local mode |
+| `FHIR_SERVICE` | `azure` (Azure Health Data Services); set `DEPLOYMENT_TYPE=local` for HAPI FHIR / local mode |
 | `CLOUD_STORAGE` | `local` (MinIO over S3 API) or `azure` (ADLS / ADLS Gen2) |
 | `SILVER_LAYER_QUERY_SERVER` | engine MySQL endpoint, e.g. `host:9030` |
 | `SILVER_LAYER_ROOT_USERNAME` / `SILVER_LAYER_ROOT_PASSWORD` | engine root credentials (only used during bootstrap) |
@@ -110,13 +110,13 @@ See `.env.example` for the full list.
 
 ## Running standalone
 
-You don't need `hyperion-core` to use this utility — it's useful on its own when you want a FHIR-shaped relational schema on top of the Hyperion engine and intend to populate it via your own ETL.
+You don't need `hyperion-core` to use this utility; it's useful on its own when you want a FHIR-shaped relational schema on top of the Hyperion engine and intend to populate it via your own ETL.
 
 ```bash
 docker run --rm --env-file .env hyperion/util:local
 ```
 
-(Build the image first with `docker build -t hyperion/util:local .` — same tag as Option B.)
+(Build the image first with `docker build -t hyperion/util:local .`, the same tag as Option B.)
 
 The container runs `python main.py`, exits with `0` on success, and writes logs to stdout.
 
@@ -146,4 +146,4 @@ pytest                                  # run the unit-test suite
 
 Tests live under `tests/`. Generated artifacts:
 
-- `schema/silver_layer_all.sql` — the DDL the utility executes against the engine (regenerated from `fhir.schema.json` on each run).
+- `schema/silver_layer_all.sql`: the DDL the utility executes against the engine (regenerated from `fhir.schema.json` on each run).

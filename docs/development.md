@@ -72,13 +72,13 @@ echo "FHIR_SERVER_URL=http://localhost:8080/fhir" >> .env
 PYTHONPATH=. python main.py
 ```
 
-This skips the Docker rebuild cycle — edit a `.py`, re-run, repeat.
+This skips the Docker rebuild cycle: edit a `.py`, re-run, repeat.
 
 ---
 
-## Performance notes — speeding up the local loop
+## Performance notes: speeding up the local loop
 
-The first `docker compose up` takes ~15 min, dominated by HAPI FHIR's Spring Boot cold start (5-10 min). Subsequent runs after `docker compose down` (without `-v`) take ~12 min because HAPI's database, Synthea bundles, and MinIO data are all persisted to named volumes — the compose skips the Synthea regeneration and the 3-stage bundle load entirely.
+The first `docker compose up` takes ~15 min, dominated by HAPI FHIR's Spring Boot cold start (5-10 min). Subsequent runs after `docker compose down` (without `-v`) take ~12 min because HAPI's database, Synthea bundles, and MinIO data are all persisted to named volumes; the compose skips the Synthea regeneration and the 3-stage bundle load entirely.
 
 Phase times after the first run:
 
@@ -86,9 +86,9 @@ Phase times after the first run:
 |---|---|---|---|
 | MinIO + FE/CN cold start | 3-4 min | 3-4 min | Same |
 | HAPI cold start | 5-10 min | 5-10 min | Spring Boot warm-up doesn't get cheaper from volume reuse |
-| Synthea generate | 1-2 min | < 1 sec | Skipped — bundles already in `synthea-output` volume |
-| Synthea load (3-stage POST) | 1-2 min | < 1 sec | Skipped — `synthea-loader` queries HAPI's Patient count and exits 0 if > 0 |
-| Util bootstrap (149 DDLs — 146 resource + 3 common tables) | 2-3 min | 2-3 min | FE metadata is not currently persisted across `down` (see below) |
+| Synthea generate | 1-2 min | < 1 sec | Skipped: bundles already in `synthea-output` volume |
+| Synthea load (3-stage POST) | 1-2 min | < 1 sec | Skipped: `synthea-loader` queries HAPI's Patient count and exits 0 if > 0 |
+| Util bootstrap (149 DDLs: 146 resource + 3 common tables) | 2-3 min | 2-3 min | FE metadata is not currently persisted across `down` (see below) |
 | Core pipeline | 4-5 min | 4-5 min | Re-pulls from HAPI; core's `updated_date` dedup logic catches no-ops |
 
 To force a full reset (regenerate Synthea, re-bootstrap engine, reload everything): `docker compose down -v`.
@@ -148,8 +148,8 @@ Useful when you've edited core/ code and only want the pipeline restarted withou
 | You want to… | Read this |
 |---|---|
 | Understand the pipeline algorithm (normalizer, shared tables, FHIR JSON Schema → DDL) | [`../core/README.md`](../core/README.md) |
-| Run `core` alone against your own engine + FHIR | [`../core/README.md`](../core/README.md) — *Option B* |
+| Run `core` alone against your own engine + FHIR | [`../core/README.md`](../core/README.md): *Option B* |
 | Modify the schema (which FHIR resources, which columns) | [`../util/README.md`](../util/README.md) + `util/schema/fhir.schema.json` |
 | Run `util` alone to bootstrap an engine you manage | [`../util/README.md`](../util/README.md) |
-| Add a new cloud provider adapter | [`../core/pyfiles/adapters/interface.py`](../core/pyfiles/adapters/interface.py) implements three abstract base classes (FHIR / Storage / Queue) — add your adapter, wire it into `core/main.py`. |
+| Add a new cloud provider adapter | [`../core/pyfiles/adapters/interface.py`](../core/pyfiles/adapters/interface.py) implements three abstract base classes (FHIR / Storage / Queue). Add your adapter, wire it into `core/main.py`. |
 | Understand the testing layout and conventions | [`../core/tests/pytest/README.md`](../core/tests/pytest/README.md) |

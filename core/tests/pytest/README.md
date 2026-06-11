@@ -24,7 +24,7 @@ PYTHONPATH=. pytest tests/pytest/unit --cov=pyfiles --cov-report=html
 ```
 tests/pytest/
 ├── conftest.py        # shared fixtures (schema, sample NDJSON, mock configs)
-├── unit/              # mock everything — dependencies/, hyperion_core/, adapters/
+├── unit/              # mock everything: dependencies/, hyperion_core/, adapters/
 ├── integration/       # require Docker (engine, HAPI) via fixtures
 ├── e2e/               # full pipeline end-to-end
 ├── regression/        # known-issue guards
@@ -59,6 +59,6 @@ and a Docker build check on every push and PR.
 
 ## Troubleshooting
 
-- **Import errors** — run from `core/` with `PYTHONPATH=.` (or from the repo root with
+- **Import errors**: run from `core/` with `PYTHONPATH=.` (or from the repo root with
   `PYTHONPATH=core pytest core/tests/pytest/unit`).
-- **Discovery** — files `test_*.py`, classes `Test*`, functions `test_*`.
+- **Discovery**: files `test_*.py`, classes `Test*`, functions `test_*`.

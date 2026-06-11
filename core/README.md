@@ -2,7 +2,7 @@
 
 **FHIR R4 → relational SQL ingestion pipeline for the Hyperion Engine (StarRocks).**
 
-Hyperion Core pulls FHIR R4 resources from any FHIR-compliant server, normalizes the JSON into a flattened relational schema, and stream-loads the result into the Hyperion Engine (a StarRocks-based columnar database). The schema itself is derived from the FHIR JSON Schema — not hand-written column lists — so it stays current as FHIR evolves. Adding a new resource type is a config change, not a code change.
+Hyperion Core pulls FHIR R4 resources from any FHIR-compliant server, normalizes the JSON into a flattened relational schema, and stream-loads the result into the Hyperion Engine (a StarRocks-based columnar database). The schema itself is derived from the FHIR JSON Schema (not hand-written column lists) so it stays current as FHIR evolves. Adding a new resource type is a config change, not a code change.
 
 This repository is the **pipeline**. Its sibling `hyperion-util` bootstraps the engine schema (databases, tables, common-table DDL) before this pipeline runs. The two are meant to be cloned and run together; the parent mono-repo's `docker-compose.yml` orchestrates a complete local demo in one command.
 
@@ -13,7 +13,7 @@ This repository is the **pipeline**. Its sibling `hyperion-util` bootstraps the 
 1. [Architecture at a glance](#architecture-at-a-glance)
 2. [The local vs Azure mode switches](#the-local-vs-azure-mode-switches)
 3. [Quick start](#quick-start)
-4. [Modules — what `APPLICATION_NAME` can be](#modules--what-application_name-can-be)
+4. [Modules: what `APPLICATION_NAME` can be](#modules--what-application_name-can-be)
 5. [Repository layout](#repository-layout)
 6. [Configuration via `.env`](#configuration-via-env)
 7. [Building and running with Docker](#building-and-running-with-docker)
@@ -51,10 +51,10 @@ This repository is the **pipeline**. Its sibling `hyperion-util` bootstraps the 
 
 There are two operating modes:
 
-- **Azure mode** — queue-driven. An exporter pulls FHIR resources for a time window, stages NDJSON to Azure Blob Storage, and enqueues work on Azure Service Bus. A separate ingester (the `core-data-ingester`) consumes the queue, downloads the staged NDJSON, normalizes, and stream-loads to the engine. Retry, audit, and lineage all run as independent processors.
-- **Local (development)** — no queue, no blob. `core-data-ingester` pulls directly from HAPI FHIR, normalizes in-process, and stream-loads to the engine. The exporter / retry / scheduler modules aren't needed in this mode.
+- **Azure mode**: queue-driven. An exporter pulls FHIR resources for a time window, stages NDJSON to Azure Blob Storage, and enqueues work on Azure Service Bus. A separate ingester (the `core-data-ingester`) consumes the queue, downloads the staged NDJSON, normalizes, and stream-loads to the engine. Retry, audit, and lineage all run as independent processors.
+- **Local (development)**: no queue, no blob. `core-data-ingester` pulls directly from HAPI FHIR, normalizes in-process, and stream-loads to the engine. The exporter / retry / scheduler modules aren't needed in this mode.
 
-The algorithm centerpiece is `pyfiles/hyperion_core/normalizer.py`. It walks the FHIR JSON Schema, classifies every column (primitive / extension / `CodeableConcept` / `Reference` / `Identifier` / backbone), and factors the three repeating complex types into shared tables so they aren't denormalized per resource. New FHIR resources are handled without code changes — they pick up the same flattening rules from the schema.
+The algorithm centerpiece is `pyfiles/hyperion_core/normalizer.py`. It walks the FHIR JSON Schema, classifies every column (primitive / extension / `CodeableConcept` / `Reference` / `Identifier` / backbone), and factors the three repeating complex types into shared tables so they aren't denormalized per resource. New FHIR resources are handled without code changes. They pick up the same flattening rules from the schema.
 
 ---
 
@@ -68,7 +68,7 @@ Three independent env vars control which cloud each subsystem uses. Each accepts
 | `CLOUD_STORAGE` | **No storage client is instantiated.** Pipeline skips blob staging. | Instantiates `AzureStorageClient` for NDJSON staging + failure container. |
 | `SERVICEBUS` | **No queue client is instantiated.** Pipeline skips the queue. | Instantiates `AzureQueueClient` for event / batch / retry / audit queues. |
 
-The behavioral fork lives in `main.py:114`: when both `queue_client` and `storage_client` are `None`, `local_converter()` runs instead of `fhir_converter()`. Both paths share the same `Normalizer` and the same stream-load mechanics — only the fetch and staging layers differ.
+The behavioral fork lives in `main.py:114`: when both `queue_client` and `storage_client` are `None`, `local_converter()` runs instead of `fhir_converter()`. Both paths share the same `Normalizer` and the same stream-load mechanics; only the fetch and staging layers differ.
 
 Common combinations:
 
@@ -84,7 +84,7 @@ Mixed modes beyond these three are not regularly exercised; if you try one, expe
 
 ## Quick start
 
-### Option A — Full local demo (recommended)
+### Option A: Full local demo (recommended)
 
 If you've cloned the parent mono-repo (which includes `hyperion-core` and `hyperion-util` as siblings), the one-command demo lives at the repo root:
 
@@ -96,11 +96,11 @@ docker compose up --build
 
 That brings up:
 
-- **engine** — StarRocks 3.4 (the Hyperion Engine), MySQL protocol on `:9030`, HTTP stream-load on `:8030`.
-- **minio** — S3-compatible storage backing the engine's shared-data volume.
-- **hyperion-util** — one-shot container that creates `_hyperion_core_`, `_hyperion_audit_`, common tables, and per-resource tables.
-- **hapi-fhir** — public HAPI FHIR JPA server, the FHIR data source.
-- **hyperion-core** — this pipeline, configured for local mode by default.
+- **engine**: StarRocks 3.4 (the Hyperion Engine), MySQL protocol on `:9030`, HTTP stream-load on `:8030`.
+- **minio**: S3-compatible storage backing the engine's shared-data volume.
+- **hyperion-util**: one-shot container that creates `_hyperion_core_`, `_hyperion_audit_`, common tables, and per-resource tables.
+- **hapi-fhir**: public HAPI FHIR JPA server, the FHIR data source.
+- **hyperion-core**: this pipeline, configured for local mode by default.
 
 After roughly 90 seconds the stack is ready. Connect any MySQL-protocol client (DBeaver, `mysql` CLI, etc.) to `localhost:9030` and query:
 
@@ -108,7 +108,7 @@ After roughly 90 seconds the stack is ready. Connect any MySQL-protocol client (
 SELECT count(*) FROM _hyperion_core_.Patient;
 ```
 
-### Option B — Build just this image (app developers)
+### Option B: Build just this image (app developers)
 
 Use this when you're developing the pipeline code itself and want to point at an engine + FHIR you already have running:
 
@@ -120,11 +120,11 @@ docker build -t hyperion/core:local .
 docker run --env-file .env hyperion/core:local
 ```
 
-The image dispatches by `APPLICATION_NAME`. Default is `core-data-ingester` (the pipeline). To run a sidecar or one of the other processors, override the variable — see the next section.
+The image dispatches by `APPLICATION_NAME`. Default is `core-data-ingester` (the pipeline). To run a sidecar or one of the other processors, override the variable. See the next section.
 
 #### Joining the hyperion-util local stack
 
-If your engine + HAPI are running in `hyperion-util`'s local compose stack (`docker-compose.local-minio.yml`), the core container needs to join that Docker network — the default service names (`starrocks-fe`, `hapi-fhir`) only resolve inside it:
+If your engine + HAPI are running in `hyperion-util`'s local compose stack (`docker-compose.local-minio.yml`), the core container needs to join that Docker network; the default service names (`starrocks-fe`, `hapi-fhir`) only resolve inside it:
 
 ```bash
 docker run --env-file .env --network util_default hyperion/core:local
@@ -134,9 +134,9 @@ The network name follows Docker Compose's convention: `<project-name>_default`, 
 
 ---
 
-## Modules — what `APPLICATION_NAME` can be
+## Modules: what `APPLICATION_NAME` can be
 
-`main.py` reads `APPLICATION_NAME` and instantiates the matching processor. The three sidecars listed at the bottom are dispatched directly by `entrypoint.sh` and bypass `main.py` — they have their own scripts.
+`main.py` reads `APPLICATION_NAME` and instantiates the matching processor. The three sidecars listed at the bottom are dispatched directly by `entrypoint.sh` and bypass `main.py`. They have their own scripts.
 
 | `APPLICATION_NAME` | Module | What it does | Required clients (Azure mode) |
 |---|---|---|---|
@@ -145,7 +145,7 @@ The network name follows Docker Compose's convention: `<project-name>_default`, 
 | `event-load-exporter` | `FHIREventProcessor` | Consumes per-resource change events from FHIR and stages them as NDJSON. | storage, queue, fhir |
 | `batch-scheduler` | `FHIRScheduler` | Reads catch-up windows from `_hyperion_audit_`, schedules batch-load runs. | queue, audit_db |
 | `audit-lineage-manager` | `AuditLineageManager` | Drains the audit queue, stream-loads audit + lineage rows to the engine. | queue |
-| `retry-manager` | `RetryManager` | Handles 602 / 603 retry codes — re-stages failed NDJSON and re-enqueues. | storage, queue |
+| `retry-manager` | `RetryManager` | Handles 602 / 603 retry codes. Re-stages failed NDJSON and re-enqueues. | storage, queue |
 | `admin-grant-manager` | sidecar (`admin_grant_manager.py`) | Watches the FE audit log for `CREATE DATABASE` events, auto-grants the admin role. | engine FE shared volume |
 | `root-password-manager` | sidecar (`root_password_manager.py`) | Rotates the engine root password on a cron, stores it to a sealed blob. | engine FE shared volume + storage |
 | `cluster-metadata-exporter` | sidecar (`cluster_metadata_exporter.py`) | Backs up FE metadata (`/opt/engine/fe/meta`) to blob on a cron. | engine FE shared volume + storage + audit_db |
@@ -158,8 +158,8 @@ In **local mode** the docker-compose stack only exercises `core-data-ingester`. 
 
 ```
 .
-├── main.py                              # Entrypoint — dispatches by APPLICATION_NAME
-├── entrypoint.sh                        # Docker entrypoint — picks main.py vs sidecar scripts
+├── main.py                              # Entrypoint: dispatches by APPLICATION_NAME
+├── entrypoint.sh                        # Docker entrypoint: picks main.py vs sidecar scripts
 ├── Dockerfile                           # python:3.11-slim-bookworm, non-root user (uid 1000)
 ├── config.ini                           # Section-based config; resolves ${ENV_VAR} substitutions
 ├── .env.example                         # Copy to .env and fill in
@@ -176,9 +176,9 @@ In **local mode** the docker-compose stack only exercises `core-data-ingester`. 
 │   │   ├── fhir_scheduler.py            # Async scheduler / catch-up
 │   │   ├── audit_lineage_manager.py     # Audit + lineage stream-load
 │   │   ├── retry_manager.py             # 602/603 retry processor
-│   │   ├── admin_grant_manager.py       # K8s sidecar — auto-grants on new DB creation
-│   │   ├── root_password_manager.py     # K8s sidecar — rotates engine root pw
-│   │   ├── cluster_metadata_exporter.py # K8s sidecar — backs up FE metadata
+│   │   ├── admin_grant_manager.py       # K8s sidecar: auto-grants on new DB creation
+│   │   ├── root_password_manager.py     # K8s sidecar: rotates engine root pw
+│   │   ├── cluster_metadata_exporter.py # K8s sidecar: backs up FE metadata
 │   │   ├── cluster_metadata_restorer.py # Disaster recovery (manual run)
 │   │   └── sidecar_init.py              # Shared sidecar base class
 │   ├── adapters/
@@ -220,7 +220,7 @@ cp .env.example .env
 docker run --env-file .env hyperion/core:local
 ```
 
-`.env` is gitignored — never commit secrets.
+`.env` is gitignored. Never commit secrets.
 
 The three switches that matter most:
 
@@ -230,7 +230,7 @@ SERVICEBUS=local       # or "azure"
 FHIR_SERVICE=local     # or "azure"
 ```
 
-Set all three to `local` for the HAPI demo, or all three to `azure` (and uncomment the Azure block at the bottom of `.env.example`) for an Azure/scaled deployment. The full env var list is in `.env.example` — it's grouped by section (engine, FHIR, pools, sidecars, Azure) with inline comments.
+Set all three to `local` for the HAPI demo, or all three to `azure` (and uncomment the Azure block at the bottom of `.env.example`) for an Azure/scaled deployment. The full env var list is in `.env.example`. It's grouped by section (engine, FHIR, pools, sidecars, Azure) with inline comments.
 
 ---
 
@@ -299,17 +299,17 @@ Three tiers under `tests/pytest/`:
 | E2E | `tests/pytest/e2e/` | Full local docker-compose stack. |
 
 ```bash
-# Unit (fast — runs in under a minute)
+# Unit (fast, runs in under a minute)
 PYTHONPATH=. pytest tests/pytest/unit -q
 
-# Integration (slow — boots Docker dependencies via fixtures)
+# Integration (slow, boots Docker dependencies via fixtures)
 PYTHONPATH=. pytest tests/pytest/integration -v
 
 # End-to-end
 PYTHONPATH=. pytest tests/pytest/e2e -v
 ```
 
-**Convention worth flagging up front:** the unit tests import the modules under test **inside the test function bodies**, not at the top of the file. This is intentional — it keeps `tests/pytest/unit/` independent of import-time side effects (`load_dotenv()`, config parsing) so each test can patch env vars before the import resolves. If you see `from pyfiles... import X` inside a `def test_...():`, that's why; don't move it to module scope.
+**Convention worth flagging up front:** the unit tests import the modules under test **inside the test function bodies**, not at the top of the file. This is intentional. It keeps `tests/pytest/unit/` independent of import-time side effects (`load_dotenv()`, config parsing) so each test can patch env vars before the import resolves. If you see `from pyfiles... import X` inside a `def test_...():`, that's why; don't move it to module scope.
 
 The unit tier ships with 700+ tests (743 at the v0.1.0 release). See [`tests/pytest/README.md`](tests/pytest/README.md) for the testing guide (fixture layout, mock strategy, what each tier is allowed to import).
 
@@ -319,9 +319,9 @@ The unit tier ships with 700+ tests (743 at the v0.1.0 release). See [`tests/pyt
 
 For a production deployment, run on Kubernetes against a managed Hyperion Engine (StarRocks) cluster.
 
-- Each `APPLICATION_NAME` runs as its own Deployment / pod — `core-data-ingester` and the exporters scale horizontally; `batch-scheduler` is a singleton.
-- The three sidecars (`admin-grant-manager`, `root-password-manager`, `cluster-metadata-exporter`) attach to the engine FE pod with a shared volume mounted at the FE log + metadata directories — they need filesystem access, not just network access.
-- Secrets (FHIR client credentials, Service Bus connection strings, engine root password) are expected to come from a secret store — Azure Key Vault, or any secret store that injects env vars.
+- Each `APPLICATION_NAME` runs as its own Deployment / pod. `core-data-ingester` and the exporters scale horizontally; `batch-scheduler` is a singleton.
+- The three sidecars (`admin-grant-manager`, `root-password-manager`, `cluster-metadata-exporter`) attach to the engine FE pod with a shared volume mounted at the FE log + metadata directories. They need filesystem access, not just network access.
+- Secrets (FHIR client credentials, Service Bus connection strings, engine root password) are expected to come from a secret store: Azure Key Vault, or any secret store that injects env vars.
 - Helm charts and Terraform are **not** part of this repository. Operators bring their own.
 
 ---
@@ -332,8 +332,8 @@ Contributions are welcome. A few things to know:
 
 - **Where to engage.** The algorithm in `pyfiles/hyperion_core/normalizer.py` (plus the shared-table helpers in `pyfiles/dependencies/df_ops.py`) is the most interesting place to read and the most useful place to improve. If you want to add a new cloud adapter (AWS, GCP), the abstract base classes in `pyfiles/adapters/interface.py` are the seam.
 - **Issues.** When filing a bug, please include: FHIR resource type, mode (`FHIR_SERVICE` / `CLOUD_STORAGE` / `SERVICEBUS` settings), engine version, and a minimal NDJSON sample if normalization is misbehaving. Performance issues should include resource count + timing.
-- **Tests.** New code lands with unit tests. The "imports inside test functions" convention is real — please follow it.
-- **CONTRIBUTING.md** — a longer guide is forthcoming.
+- **Tests.** New code lands with unit tests. The "imports inside test functions" convention is real. Please follow it.
+- **CONTRIBUTING.md**: a longer guide is forthcoming.
 
 ---
 
