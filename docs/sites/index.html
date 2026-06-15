@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Primary SEO -->
+  <title>Hyperion: Query FHIR with plain SQL</title>
+  <meta name="description" content="Hyperion transforms HL7 FHIR R4 healthcare data into a columnar, MySQL-compatible SQL database. One table per resource type, columns that mirror FHIR R4. No FHIRPath, no JSON unnesting. Open source." />
+  <link rel="canonical" href="https://health-chain-inc.github.io/hyperion/sites/" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20x='6'%20y='14'%20width='4'%20height='12'%20rx='1.5'%20fill='%236366f1'/%3E%3Crect%20x='14'%20y='5'%20width='4'%20height='21'%20rx='1.5'%20fill='%234f46e5'/%3E%3Crect%20x='22'%20y='10'%20width='4'%20height='16'%20rx='1.5'%20fill='%23818cf8'/%3E%3C/svg%3E" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Hyperion" />
+  <meta property="og:title" content="Hyperion: Query FHIR with plain SQL" />
+  <meta property="og:description" content="Transform HL7 FHIR R4 into a columnar, MySQL-compatible SQL database. One table per resource type. No FHIRPath, no JSON unnesting. Open source." />
+  <meta property="og:url" content="https://health-chain-inc.github.io/hyperion/sites/" />
+  <meta property="og:image" content="https://health-chain-inc.github.io/hyperion/sites/og-image.svg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hyperion: Query FHIR with plain SQL" />
+  <meta name="twitter:description" content="Transform HL7 FHIR R4 into a columnar, MySQL-compatible SQL database. No FHIRPath, no JSON unnesting. Open source." />
+  <meta name="twitter:image" content="https://health-chain-inc.github.io/hyperion/sites/og-image.svg" />
+
+  <!-- Fonts: Inter (body/headings) + JetBrains Mono (code/labels) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- progressive-enhancement flag: scroll-reveal only hides content when JS is active -->
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Analytics: GA4 + Consent Mode v2. Loads only on the canonical Pages host (forks/local never report) AND only after the visitor accepts. -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { 'ad_storage':'denied', 'ad_user_data':'denied', 'ad_personalization':'denied', 'analytics_storage':'denied' });
+    window.__loadGA = function () {
+      if (window.__gaLoaded || location.hostname !== 'health-chain-inc.github.io') return;
+      window.__gaLoaded = true;
+      gtag('consent', 'update', { 'analytics_storage':'granted' });
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=G-M7NSZF2RD1';
+      document.head.appendChild(s);
+      gtag('js', new Date());
+      gtag('config', 'G-M7NSZF2RD1');
+    };
+    if (location.hostname === 'health-chain-inc.github.io' && localStorage.getItem('hyperion-analytics-consent') === 'granted') {
+      window.__loadGA();
+    }
+  </script>
+
+  <!-- Structured data: software -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Hyperion",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Docker (Linux, macOS, Windows)",
+    "datePublished": "2026-06-09",
+    "dateModified": "2026-06-10",
+    "softwareVersion": "0.1.0",
+    "description": "Hyperion transforms HL7 FHIR R4 healthcare data into a columnar, MySQL-compatible SQL database: one table per resource type, columns that mirror FHIR R4.",
+    "url": "https://health-chain-inc.github.io/hyperion/sites/",
+    "codeRepository": "https://github.com/Health-Chain-Inc/hyperion",
+    "license": "https://www.apache.org/licenses/LICENSE-2.0",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <!-- Structured data: FAQ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "What is Hyperion?",
+        "acceptedAnswer": { "@type": "Answer", "text": "An open-source platform that pulls HL7 FHIR R4 resources into a columnar, MySQL-compatible SQL database, with one table per resource type and columns mirroring FHIR R4, so you can run population analytics with plain SQL." } },
+      { "@type": "Question", "name": "Is Hyperion a FHIR server?",
+        "acceptedAnswer": { "@type": "Answer", "text": "No. Hyperion consumes a FHIR API (such as HAPI or Azure Health Data Services); it does not serve one. It is an analytics layer downstream of your clinical systems." } },
+      { "@type": "Question", "name": "How do I connect Hyperion to my FHIR server?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Point Hyperion at any FHIR R4-compliant HTTP API (for example HAPI or Azure Health Data Services). It fetches resources and persists them as flattened tables in the columnar engine. The Docker Compose quickstart wires up a full local demo in one command." } },
+      { "@type": "Question", "name": "Which FHIR version does Hyperion support?",
+        "acceptedAnswer": { "@type": "Answer", "text": "HL7 FHIR R4 (4.0.1). The schema is generated mechanically from the FHIR R4 JSON Schema and covers all 146 resource types." } },
+      { "@type": "Question", "name": "What does Hyperion cost?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Nothing. It is free and open source under the Apache License 2.0." } },
+      { "@type": "Question", "name": "Can I use Hyperion in production?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. It runs locally for evaluation and supports an Azure deployment for real workloads. As infrastructure software it is provided without warranty, and HIPAA/SOC 2 obligations remain the responsibility of the deploying organization." } }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Hyperion home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand-text"><strong>Hyperion</strong></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#why">Why</a>
+      <a href="#mapping">How it maps</a>
+      <a href="#quickstart">Quickstart</a>
+      <a href="#docs">Docs</a>
+      <a class="nav-cta" href="https://github.com/Health-Chain-Inc/hyperion">
+        <svg class="gh" viewBox="0 0 16 16" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="kicker reveal" style="--d:0ms"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>From FHIR API to SQL in minutes · Apache&nbsp;2.0</p>
+          <h1 class="reveal" style="--d:80ms"><span class="h1-thin">Query FHIR with</span><br /><span class="h1-bold accent-underline">plain SQL.</span></h1>
+          <p class="lede reveal" style="--d:160ms">
+            Pull HL7&nbsp;FHIR&nbsp;R4 from any compliant API into a columnar, MySQL-compatible database
+            and write <strong>plain SQL</strong> for population analytics. No FHIRPath, no JSON-flattening
+            pipelines, no proprietary driver.
+          </p>
+          <div class="hero-actions reveal" style="--d:240ms">
+            <a class="btn btn-primary" href="#quickstart">Run the local demo<span class="btn-arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="https://github.com/Health-Chain-Inc/hyperion">
+              <svg class="gh" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              View on GitHub
+            </a>
+          </div>
+          <ul class="chips reveal" style="--d:320ms" aria-label="At a glance">
+            <li>Apache&nbsp;2.0</li>
+            <li>FHIR&nbsp;R4 · 146 resources</li>
+            <li>MySQL wire protocol</li>
+            <li>StarRocks engine</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- "works with" trust strip -->
+      <div class="trust-strip reveal" style="--d:400ms">
+        <span class="trust-label">Connect anything that speaks MySQL:</span>
+        <ul>
+          <li>Power BI</li><li>Tableau</li><li>dbt</li><li>DBeaver</li><li>Metabase</li><li>Databricks</li><li>JDBC / ODBC</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- WHY (bento, asymmetric) -->
+    <section class="section" id="why">
+      <div class="section-head">
+        <p class="kicker kicker-ink"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>Why Hyperion</p>
+        <h2><span class="w6">Stop wrestling</span> <span class="w9">FHIR</span><span class="w6">. Just write</span> <span class="w8 accent">SQL</span><span class="w6">.</span></h2>
+        <p class="section-sub">
+          FHIR is built for exchange: deeply nested JSON, one patient at a time. The moment you want a
+          population answer, you're hand-rolling FHIRPath or flattening pipelines forever. Hyperion skips all of it.
+        </p>
+      </div>
+      <ul class="bento">
+        <li class="feature feature-lg reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>It's just SQL</h3>
+          <p>Tables and columns map to FHIR&nbsp;R4 directly, so <code>JOIN</code>, <code>GROUP&nbsp;BY</code>, and your existing dbt models work unchanged. Nothing new to learn. The schema <em>is</em> the spec.</p>
+        </li>
+        <li class="feature reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>MySQL on the wire</h3>
+          <p>BI tools, JDBC/ODBC clients, ORMs, and migration runners connect with zero special handling.</p>
+        </li>
+        <li class="feature reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>The schema generates itself</h3>
+          <p>Every table is derived mechanically from the FHIR&nbsp;R4 JSON Schema. New element? Re-bootstrap. Never hand-write DDL.</p>
+        </li>
+        <li class="feature reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Profiled data, same tables</h3>
+          <p>US&nbsp;Core and other profiles constrain the same base R4 resources, so profiled data lands straight into existing columns.</p>
+        </li>
+        <li class="feature reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Compute &amp; storage scale apart</h3>
+          <p>Built on shared-data StarRocks. Burst compute for a heavy window, shrink when idle; data lives in Blob, ADLS, S3, or MinIO.</p>
+        </li>
+        <li class="feature feature-wide reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Live or batch, your call</h3>
+          <p>Stream-load every change in real time in Azure mode via Service Bus, or run a single batch pass locally. Clone, point it at a FHIR endpoint, and start querying in minutes.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- HOW IT MAPS (FHIR JSON -> SQL row) -->
+    <section class="section-dark" id="mapping">
+      <div class="mapping-wrap">
+        <div class="mapping-head">
+          <p class="kicker kicker-dark"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>One table per resource</p>
+          <h2><span class="w6">Nested FHIR in.</span> <span class="w9 accent">Flat columns</span> <span class="w6">out.</span></h2>
+          <p>Hyperion flattens each FHIR&nbsp;R4 resource into a table in <code>_hyperion_core_</code>. Columns mirror the resource, so the shape you query is the shape you already know.</p>
+        </div>
+        <div class="transform">
+          <div class="code-card transform-from reveal-on-scroll">
+            <div class="code-card-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="code-tab">Patient · FHIR R4 JSON</span></div>
+<pre class="code" role="region" aria-label="Patient resource as FHIR R4 JSON"><code><span class="c-pun">{</span>
+  <span class="c-key">"resourceType"</span>: <span class="c-str">"Patient"</span>,
+  <span class="c-key">"id"</span>: <span class="c-str">"a1b2"</span>,
+  <span class="c-key">"gender"</span>: <span class="c-str">"female"</span>,
+  <span class="c-key">"birthDate"</span>: <span class="c-str">"1984-03-11"</span>,
+  <span class="c-key">"name"</span>: <span class="c-pun">[{</span> <span class="c-key">"family"</span>: <span class="c-str">"Reyes"</span> <span class="c-pun">}]</span>
+<span class="c-pun">}</span></code></pre>
+          </div>
+          <div class="transform-arrow" aria-hidden="true">
+            <svg viewBox="0 0 48 24" width="48" height="24"><path d="M2 12h40m0 0-9-8m9 8-9 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="code-card transform-to reveal-on-scroll">
+            <div class="code-card-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="code-tab">_hyperion_core_.patient</span></div>
+<pre class="code table-out" role="region" aria-label="Flattened patient table in the engine"><code><span class="c-com">id    gender  birth_date  name_family</span>
+<span class="c-rule">────  ──────  ──────────  ───────────</span>
+a1b2  female  1984-03-11  ["Reyes"]</code></pre>
+          </div>
+        </div>
+        <p class="transform-note">Repeating FHIR elements (like <code>name</code>) become <code>ARRAY</code> columns: one row per resource, no exploding.</p>
+      </div>
+    </section>
+
+    <!-- WHAT IT IS NOT -->
+    <section class="section" id="scope">
+      <div class="section-head">
+        <p class="kicker kicker-ink"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>Scope</p>
+        <h2><span class="w6">What Hyperion is</span> <span class="w9 accent">not</span></h2>
+      </div>
+      <ul class="not-grid">
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Not a FHIR server</h3>
+          <p>It consumes a FHIR API; it does not serve one.</p>
+        </li>
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Not an EHR</h3>
+          <p>It's an analytics layer downstream of your clinical systems.</p>
+        </li>
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Not a validator</h3>
+          <p>No terminology service. Resources are ingested as-is.</p>
+        </li>
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Not a transactional store</h3>
+          <p>The engine is columnar, built for analytics, not CRUD.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- QUICKSTART -->
+    <section class="section-tint" id="quickstart">
+      <div class="section-inner">
+        <div class="section-head">
+          <p class="kicker kicker-ink"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>Quickstart</p>
+          <h2><span class="w6">Up and running in</span> <span class="w9">one command</span></h2>
+          <p class="section-sub">Docker Desktop or Engine 24+, ~10&nbsp;GB disk, ~8&nbsp;GB RAM. First run is ~5-10&nbsp;min.</p>
+        </div>
+        <div class="code-card code-card-wide">
+          <div class="code-card-bar">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="code-tab">bash</span>
+            <button class="copy-btn" type="button" data-copy-target="#sql-quickstart" aria-label="Copy commands">Copy</button>
+          </div>
+<pre class="code" id="sql-quickstart" role="region" aria-label="Quickstart shell commands"><code><span class="cl"><span class="c-com"># Clone, configure, launch the full local demo</span></span>
+<span class="cl">git clone https://github.com/Health-Chain-Inc/hyperion.git</span>
+<span class="cl"><span class="c-kw">cd</span> hyperion</span>
+<span class="cl">cp .env.example .env</span>
+<span class="cl">docker compose up <span class="c-flag">--build</span></span></code></pre>
+        </div>
+        <div class="quickstart-actions">
+          <a class="btn btn-primary" href="https://github.com/Health-Chain-Inc/hyperion">Read the docs<span class="btn-arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-outline" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/queries.md">Example queries</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTATION (the README "Going deeper" table, as a page section) -->
+    <section class="section" id="docs">
+      <div class="section-head">
+        <p class="kicker kicker-ink"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>Documentation</p>
+        <h2><span class="w6">Dig</span> <span class="w9">deeper</span></h2>
+        <p class="section-sub">This page is the short version. Everything below lives in the repo.</p>
+      </div>
+      <ul class="docs-grid">
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/architecture.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Architecture <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>How the pieces fit: diagram, key design, operating modes, repo layout.</p>
+        </a></li>
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/queries.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Example queries <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>SQL against the FHIR-shaped tables and the shared reference tables.</p>
+        </a></li>
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/configuration.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Configuration <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>The complete environment-variable reference for local and Azure modes.</p>
+        </a></li>
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/development.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Development <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>Dev workflow, common operations, tests, and advanced compose usage.</p>
+        </a></li>
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/deployment-azure.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Azure deployment <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>Hybrid Azure walkthrough: FHIR, Service Bus, Blob/ADLS, scaling up.</p>
+        </a></li>
+        <li><a class="doc-card" href="https://github.com/Health-Chain-Inc/hyperion/blob/main/docs/troubleshooting.md">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>Troubleshooting <span class="doc-arrow" aria-hidden="true">→</span></h3>
+          <p>Symptoms and fixes for the most common setup and query issues.</p>
+        </a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>Hyperion</strong></span>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="https://github.com/Health-Chain-Inc/hyperion">GitHub</a>
+        <a href="https://github.com/Health-Chain-Inc/hyperion/tree/main/docs">Documentation</a>
+        <a href="https://github.com/Health-Chain-Inc/hyperion/blob/main/LICENSE">License (Apache 2.0)</a>
+      </nav>
+    </div>
+    <p class="disclaimer">
+      Hyperion is data-engineering infrastructure for analytics. It is not a medical device and is
+      not intended for clinical decision-making or patient care. Deploying it does not by itself
+      satisfy HIPAA, SOC&nbsp;2, or other regulatory obligations. Those remain the responsibility of
+      the deploying organization.
+    </p>
+    <p class="copyright">© 2026 · Open source under the Apache 2.0 license</p>
+    <p class="copyright">Traffic is measured with Google Analytics, loaded only after you accept the consent prompt.</p>
+  </footer>
+
+  <div id="consent-banner" class="consent-banner" hidden role="dialog" aria-label="Analytics consent">
+    <p>We use Google Analytics to measure traffic and see how Hyperion is reaching people. Nothing is collected until you accept.</p>
+    <div class="consent-actions">
+      <button type="button" class="btn btn-primary" data-consent="granted">Accept</button>
+      <button type="button" class="btn btn-outline" data-consent="denied">Decline</button>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var KEY = 'hyperion-analytics-consent';
+      var banner = document.getElementById('consent-banner');
+      if (!banner) return;
+      // Only show where analytics can actually run (canonical host) and no choice made yet.
+      if (location.hostname === 'health-chain-inc.github.io' && !localStorage.getItem(KEY)) {
+        banner.hidden = false;
+      }
+      banner.addEventListener('click', function (e) {
+        var choice = e.target && e.target.getAttribute('data-consent');
+        if (!choice) return;
+        localStorage.setItem(KEY, choice);
+        banner.hidden = true;
+        if (choice === 'granted' && typeof window.__loadGA === 'function') window.__loadGA();
+      });
+    })();
+  </script>
+
+  <script src="site.js" defer></script>
+</body>
+</html>

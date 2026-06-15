@@ -24,7 +24,7 @@ Output of `SHOW FRONTENDS\G` (the `FeVersion` field):
 **Actual behavior / error output**
 
 
-**Minimal NDJSON sample** (for normalization issues — redact any real patient data)
+**Minimal NDJSON sample** (for normalization issues, redact any real patient data)
 
 ```json
 ```

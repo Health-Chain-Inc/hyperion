@@ -18,7 +18,7 @@ Thank you for your interest in contributing. Hyperion is a FHIR R4 → SQL inges
 git clone https://github.com/Health-Chain-Inc/hyperion.git
 cd hyperion
 cp .env.example .env
-docker compose up           # full local demo — HAPI + MinIO + StarRocks + pipeline
+docker compose up           # full local demo: HAPI + MinIO + StarRocks + pipeline
 ```
 
 See [`docs/development.md`](docs/development.md) for tighter dev-loop options (running core directly from Python without a Docker rebuild cycle).
@@ -28,7 +28,7 @@ See [`docs/development.md`](docs/development.md) for tighter dev-loop options (r
 ## Running tests
 
 ```bash
-# Unit tests — fast, no Docker needed
+# Unit tests: fast, no Docker needed
 cd core
 pip install -r requirements.txt -r requirements-dev.txt
 PYTHONPATH=. pytest tests/pytest/unit -q
@@ -45,7 +45,7 @@ Full integration and e2e tests require the Docker compose stack. See [`core/test
 
 ## Code style
 
-We use [Ruff](https://docs.astral.sh/ruff/) for linting (config in [`ruff.toml`](ruff.toml)). The enforced rules are correctness-focused — pyflakes (`F`), bugbear (`B`), and syntax errors (`E9`) — not whitespace/line-length formatting. CI runs `ruff check core/ util/` on every PR.
+We use [Ruff](https://docs.astral.sh/ruff/) for linting (config in [`ruff.toml`](ruff.toml)). The enforced rules are correctness-focused: pyflakes (`F`), bugbear (`B`), and syntax errors (`E9`), not whitespace/line-length formatting. CI runs `ruff check core/ util/` on every PR.
 
 ```bash
 pip install ruff==0.15.15
@@ -57,7 +57,7 @@ ruff check --fix core/ util/  # auto-fix what's safe
 
 ## Key conventions
 
-**Imports inside test functions.** The `core/` unit tests import modules under test *inside* each `def test_...():` body, not at module scope. This is intentional — it lets each test patch `os.environ` before the module resolves its `load_dotenv()` call. Do not move these imports to module scope.
+**Imports inside test functions.** The `core/` unit tests import modules under test *inside* each `def test_...():` body, not at module scope. This is intentional. It lets each test patch `os.environ` before the module resolves its `load_dotenv()` call. Do not move these imports to module scope.
 
 **No hand-authored DDL.** The schema is generated from `schema/fhir.schema.json`. If you need to change which columns a resource table has, modify the schema generation logic in `util/pyfiles/db_handler/resource_schema_generator.py`, not a hand-written column list.
 
@@ -73,7 +73,7 @@ For large changes (new adapters, schema-generation changes, new modules), please
 
 1. Fork the repo and create a branch. Use a `feat/`, `fix/`, or `docs/` prefix: `git checkout -b feat/my-change`
 2. Make your changes with tests.
-3. Run unit tests locally (see above) — they must pass.
+3. Run unit tests locally (see above). They must pass.
 4. Open a PR against `main`. Fill in the PR template.
 5. A maintainer will review and respond within a few business days.
 

@@ -6,7 +6,7 @@
 
 Hyperion points at a FHIR R4 API and pulls FHIR R4 resources into a columnar database that speaks the MySQL wire protocol. One table per resource type, columns that mirror FHIR R4. Connect any SQL client and start querying.
 
-No FHIRPath. No unnesting JSON. No driver to install — Power BI, Tableau, dbt, DBeaver, Metabase, or your psql-but-for-mysql of choice: if your tool talks to MySQL, it talks to Hyperion.
+No FHIRPath. No unnesting JSON. No driver to install. Power BI, Tableau, dbt, DBeaver, Metabase, or your psql-but-for-mysql of choice: if your tool talks to MySQL, it talks to Hyperion.
 
 ## Why you'd want this
 
@@ -16,11 +16,11 @@ Hyperion skips all of it:
 
 - **It's just SQL.** Tables and columns map to FHIR R4 directly, so `JOIN`, `GROUP BY`, and your existing dbt models work unchanged. Nothing new to learn.
 - **It's just MySQL on the wire.** Power BI, Tableau, dbt, DBeaver, Metabase, JDBC/ODBC clients, BI tools, ORMs, and migration runners all connect over the MySQL wire protocol with zero special handling. No proprietary client.
-- **The schema generates itself.** Every table is derived mechanically from the FHIR R4 (4.0.1) JSON Schema. New resource or new element? Re-bootstrap, not a code change — you never hand-write or hand-maintain DDL. As the spec evolves, the schema evolves with it.
-- **Profiled data lands in the same tables.** US Core and other profiles constrain the same base R4 resources Hyperion already models, so profiled data lands straight into the existing columns. Hyperion stores the base resource as-is — it does not validate or enforce profiles.
+- **The schema generates itself.** Every table is derived mechanically from the FHIR R4 (4.0.1) JSON Schema. New resource or new element? Re-bootstrap, not a code change. You never hand-write or hand-maintain DDL. As the spec evolves, the schema evolves with it.
+- **Profiled data lands in the same tables.** US Core and other profiles constrain the same base R4 resources Hyperion already models, so profiled data lands straight into the existing columns. Hyperion stores the base resource as-is; it does not validate or enforce profiles.
 - **Compute and storage scale separately.** Built on shared-data [StarRocks 3.4](https://github.com/StarRocks/starrocks). Burst compute for a heavy query window, shrink it when idle; data lives in Azure Blob, ADLS Gen2, S3, or MinIO.
-- **Live or batch.** In Azure mode it stream-loads every change in real time via Service Bus. The local demo is a single batch pass — clone, point it at a FHIR endpoint, start querying in minutes.
-- **ML-ready.** Connect Databricks — or any MySQL-compatible feature/ML pipeline — to the engine for downstream ML workloads.
+- **Live or batch.** In Azure mode it stream-loads every change in real time via Service Bus. The local demo is a single batch pass: clone, point it at a FHIR endpoint, start querying in minutes.
+- **ML-ready.** Connect Databricks (or any MySQL-compatible feature/ML pipeline) to the engine for downstream ML workloads.
 
 ## What Hyperion is not
 
@@ -28,7 +28,7 @@ Hyperion skips all of it:
 - **Not an EHR or a replacement for one.** It's an analytics layer downstream of your clinical systems.
 - **Not a validator or terminology service.** Resources are ingested as-is; validation happens upstream.
 - **Not a transactional store.** The engine is columnar, built for analytical queries, not record-by-record CRUD.
-- **Not an HL7 SQL-on-FHIR (v2) ViewDefinition implementation.** Same problem, solved with materialized tables instead of views — so there's nothing to author.
+- **Not an HL7 SQL-on-FHIR (v2) ViewDefinition implementation.** Same problem, solved with materialized tables instead of views, so there's nothing to author.
 
 ## Up and running
 
@@ -70,7 +70,7 @@ Example queries against the FHIR-shaped tables → [`docs/queries.md`](docs/quer
 
 | You want to… | Read this |
 |---|---|
-| How the pieces fit together — diagram, key design, operating modes, repo layout | [`docs/architecture.md`](docs/architecture.md) |
+| How the pieces fit together: diagram, key design, operating modes, repo layout | [`docs/architecture.md`](docs/architecture.md) |
 | Example SQL against the FHIR-shaped + shared tables | [`docs/queries.md`](docs/queries.md) |
 | Complete environment-variable reference | [`docs/configuration.md`](docs/configuration.md) |
 | Dev workflow, common operations, tests, advanced compose | [`docs/development.md`](docs/development.md) |
@@ -83,14 +83,14 @@ All docs are indexed in [`docs/`](docs/README.md).
 
 ## Intended use
 
-Hyperion is data-engineering infrastructure for analytics. It is not a medical device, is not validated or intended for clinical decision-making or patient care, and deploying it does not by itself satisfy HIPAA, SOC 2, or any other regulatory obligation — those remain the responsibility of the deploying organization.
+Hyperion is data-engineering infrastructure for analytics. It is not a medical device, is not validated or intended for clinical decision-making or patient care, and deploying it does not by itself satisfy HIPAA, SOC 2, or any other regulatory obligation; those remain the responsibility of the deploying organization.
 
 ## Community and contributing
 
-- **Questions / bugs** — open a [GitHub issue](../../issues).
-- **Contributing** — see [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, conventions, and the PR process.
-- **Security issues** — please report privately via [SECURITY.md](SECURITY.md), not a public issue.
-- **Code of conduct** — [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) (Contributor Covenant).
+- **Questions / bugs**: open a [GitHub issue](../../issues).
+- **Contributing**: see [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, conventions, and the PR process.
+- **Security issues**: please report privately via [SECURITY.md](SECURITY.md), not a public issue.
+- **Code of conduct**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) (Contributor Covenant).
 
 ## License
 

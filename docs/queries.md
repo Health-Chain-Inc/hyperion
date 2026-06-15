@@ -36,4 +36,4 @@ ORDER BY observation_count DESC
 LIMIT 10;
 ```
 
-By default only `patient`, `observation`, `condition`, and `encounter` are populated. To ingest more resource types, expand `RESOURCE_TYPES` — see [development.md](development.md#common-operations) and [configuration.md](configuration.md).
+By default only `patient`, `observation`, `condition`, and `encounter` are populated. To ingest more resource types, expand `RESOURCE_TYPES`. See [development.md](development.md#common-operations) and [configuration.md](configuration.md).

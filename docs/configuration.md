@@ -1,6 +1,6 @@
 # Configuration reference
 
-All configuration is via environment variables. The parent compose reads from `.env` (which is gitignored). Below is the canonical list — copy `.env.example` to `.env` and edit from there.
+All configuration is via environment variables. The parent compose reads from `.env` (which is gitignored). Below is the canonical list. Copy `.env.example` to `.env` and edit from there.
 
 ---
 
@@ -57,7 +57,7 @@ All configuration is via environment variables. The parent compose reads from `.
 | `LOCAL_STORAGE_ACCESS_KEY_ID` | `minioadmin` | MinIO root user. |
 | `LOCAL_STORAGE_ACCESS_KEY_SECRET` | `minioadmin123` | MinIO root password. |
 | `LOCAL_STORAGE_REGION` | `us-east-1` | MinIO doesn't care, but the engine's S3 client demands a value. |
-| `AZURE_BLOB_STORAGE_*` | (commented out) | Container, endpoint, version — see the Azure block in `.env.example`. |
+| `AZURE_BLOB_STORAGE_*` | (commented out) | Container, endpoint, version (see the Azure block in `.env.example`). |
 
 ---
 
@@ -65,16 +65,16 @@ All configuration is via environment variables. The parent compose reads from `.
 
 | Variable | Default | Notes |
 |---|---|---|
-| `SYNTHEA_PATIENT_COUNT` | `10` | How many synthetic patients to generate. Each ≈ 50–200 FHIR resources. 10 patients ≈ 60–90s; 100 patients ≈ 5–8 min. |
-| `SYNTHEA_SEED` | `12345` | Deterministic seed — same seed produces identical data. |
+| `SYNTHEA_PATIENT_COUNT` | `10` | How many synthetic patients to generate. Each ≈ 50-200 FHIR resources. 10 patients ≈ 60-90s; 100 patients ≈ 5-8 min. |
+| `SYNTHEA_SEED` | `12345` | Deterministic seed; the same seed produces identical data. |
 | `SYNTHEA_VERSION` | `3.3.0` | Synthea release tag; jar is downloaded once and cached. |
-| `SYNTHEA_INCLUDE_HOSPITAL` | `true` | Exports `hospitalInformation*.json` (Organization + Location bundles). **Required** because patient bundles reference these via NPI match URLs — disabling will cause HAPI to reject patient bundles. The loader stages loads to handle this dependency. |
-| `SYNTHEA_INCLUDE_PRACTITIONER` | `true` | Exports `practitionerInformation*.json` (Practitioner + PractitionerRole bundles). Same dependency story as hospital — patient bundles reference practitioners by NPI, so this must be on. |
+| `SYNTHEA_INCLUDE_HOSPITAL` | `true` | Exports `hospitalInformation*.json` (Organization + Location bundles). **Required** because patient bundles reference these via NPI match URLs, and disabling will cause HAPI to reject patient bundles. The loader stages loads to handle this dependency. |
+| `SYNTHEA_INCLUDE_PRACTITIONER` | `true` | Exports `practitionerInformation*.json` (Practitioner + PractitionerRole bundles). Same dependency story as hospital: patient bundles reference practitioners by NPI, so this must be on. |
 | `SYNTHEA_ONLY_ALIVE` | `true` | Set `false` to include deceased patients (Synthea models full lifespans). |
 
 ### Ingesting more resource types
 
-Synthea generates ~15–20 FHIR R4 resource types per patient (Patient, Encounter, Condition, Observation, Procedure, MedicationRequest, Immunization, DiagnosticReport, Claim, ExplanationOfBenefit, and more). Every FHIR R4 type already has a flattened table in `_hyperion_core_` (util creates one per type at bootstrap), so to ingest beyond the default four just expand `RESOURCE_TYPES`. Suggested presets:
+Synthea generates ~15-20 FHIR R4 resource types per patient (Patient, Encounter, Condition, Observation, Procedure, MedicationRequest, Immunization, DiagnosticReport, Claim, ExplanationOfBenefit, and more). Every FHIR R4 type already has a flattened table in `_hyperion_core_` (util creates one per type at bootstrap), so to ingest beyond the default four just expand `RESOURCE_TYPES`. Suggested presets:
 
 - **Clinical:** `Patient,Observation,Condition,Encounter,Procedure,MedicationRequest,Immunization,DiagnosticReport,AllergyIntolerance,CarePlan`
 - **Clinical + Claims:** add `Claim,ExplanationOfBenefit,Coverage`

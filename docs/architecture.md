@@ -31,7 +31,7 @@ How the pieces fit together: the pipeline, the engine, object storage, and the o
                                 │ HTTP stream-load (JSON)
                                 ▼
                   ┌──────────────────────────────────────────┐
-                  │  Hyperion Engine — StarRocks 3.4         │
+                  │  Hyperion Engine, StarRocks 3.4          │
                   │  shared-data mode                        │
                   │   ┌─ FE  Frontend (metadata, SQL planning)│
                   │   │  └─ MySQL :9030, HTTP :8030          │
@@ -45,7 +45,7 @@ How the pieces fit together: the pipeline, the engine, object storage, and the o
                   │  • MinIO         (local demo)            │
                   │  • Azure Blob /  (Azure mode)            │
                   │    ADLS Gen2                             │
-                  │  (compressed columnar files —            │
+                  │  (compressed columnar files,             │
                   │   single source of truth)                │
                   └──────────────────────────────────────────┘
 
@@ -63,15 +63,15 @@ How the pieces fit together: the pipeline, the engine, object storage, and the o
 
 ## Key design properties
 
-**Schema is derived, not authored.** Util discovers the resource types from the source FHIR server's `/metadata` CapabilityStatement and emits one table per type, with each table's columns flattened from `schema/fhir.schema.json`. Against the bundled HAPI server — which advertises the full set of FHIR R4 resource types — that's every type, not a hand-picked subset. When the FHIR spec adds a resource or evolves an existing one, the schema regenerates from the updated schema file with no code changes. Existing data stays compatible.
+**Schema is derived, not authored.** Util discovers the resource types from the source FHIR server's `/metadata` CapabilityStatement and emits one table per type, with each table's columns flattened from `schema/fhir.schema.json`. Against the bundled HAPI server (which advertises the full set of FHIR R4 resource types), that's every type, not a hand-picked subset. When the FHIR spec adds a resource or evolves an existing one, the schema regenerates from the updated schema file with no code changes. Existing data stays compatible.
 
 **Batch and event load processing.** The pipeline supports two ingestion modes that share one normalization path: **batch load** for scheduled time-window pulls (catch-up, historical backfill, periodic refresh) and **event load** for change-driven real-time ingestion (Azure mode only, driven by Service Bus queues; local mode supports batch load only). Same tables, same audit lineage, regardless of how the data arrived.
 
-**Compute is decoupled from storage.** The Hyperion Engine runs in **shared-data** mode — compute and storage are fully separated: table data lives as the engine's native columnar files — LZ4-compressed — in object storage (Azure Blob / ADLS Gen2 / S3 / MinIO), with the engine managing file layout, partitioning, and metadata. Compute nodes are stateless and read directly from object storage — scale compute up during heavy analytics windows and shrink it when idle, with no rebalancing and no rebuild. Storage cost grows with data; compute cost grows with workload, and the two move independently.
+**Compute is decoupled from storage.** The Hyperion Engine runs in **shared-data** mode. Compute and storage are fully separated: table data lives as the engine's native columnar files (LZ4-compressed) in object storage (Azure Blob / ADLS Gen2 / S3 / MinIO), with the engine managing file layout, partitioning, and metadata. Compute nodes are stateless and read directly from object storage. Scale compute up during heavy analytics windows and shrink it when idle, with no rebalancing and no rebuild. Storage cost grows with data; compute cost grows with workload, and the two move independently.
 
-**No bronze/silver/gold triplication.** FHIR-shaped silver tables are the only stored representation — no separate bronze (raw FHIR JSON files) or gold (curated marts) physical copies. Classic lakehouse pipelines store the same data three times across staging layers; Hyperion stores it once.
+**No bronze/silver/gold triplication.** FHIR-shaped silver tables are the only stored representation: no separate bronze (raw FHIR JSON files) or gold (curated marts) physical copies. Classic lakehouse pipelines store the same data three times across staging layers; Hyperion stores it once.
 
-**Standard SQL clients connect natively.** Power BI, Tableau, dbt, DBeaver, Metabase, and every popular BI tool connect over the MySQL wire protocol on port 9030 — any MySQL JDBC / ODBC client works without a translation gateway. There's no proprietary client library and no protocol bridge.
+**Standard SQL clients connect natively.** Power BI, Tableau, dbt, DBeaver, Metabase, and every popular BI tool connect over the MySQL wire protocol on port 9030; any MySQL JDBC / ODBC client works without a translation gateway. There's no proprietary client library and no protocol bridge.
 
 ## Two operating modes
 
@@ -80,8 +80,8 @@ Each subsystem (FHIR server, storage, queue) has its own mode switch. You can mi
 | Env var | `local` value | `azure` value |
 |---|---|---|
 | `FHIR_SERVICE` | HAPI FHIR (in compose) | Azure Health Data Services FHIR |
-| `CLOUD_STORAGE` | No blob staging — in-memory normalize → stream-load | Azure Blob Storage / ADLS Gen2 |
-| `SERVICEBUS` | No queue — direct pull from FHIR | Azure Service Bus (event / batch / retry / audit) |
+| `CLOUD_STORAGE` | No blob staging; in-memory normalize → stream-load | Azure Blob Storage / ADLS Gen2 |
+| `SERVICEBUS` | No queue; direct pull from FHIR | Azure Service Bus (event / batch / retry / audit) |
 
 **Common combinations:**
 
@@ -100,10 +100,10 @@ hyperion-open-source/
 ├── docs/                       # deployment, configuration, development, troubleshooting
 ├── docker-compose.yml          # parent compose: full local demo
 ├── docker-compose.azure.yml    # parent compose: hybrid Azure deployment
-├── .env.example                # shared env template — copy to .env
+├── .env.example                # shared env template; copy to .env
 └── README.md                   # project overview
 ```
 
-**`core/` and `util/`** are the two services that make up Hyperion. Each ships its own `Dockerfile` and its own README — see the [Going deeper](../README.md#going-deeper) table for when to read which.
+**`core/` and `util/`** are the two services that make up Hyperion. Each ships its own `Dockerfile` and its own README; see the [Going deeper](../README.md#going-deeper) table for when to read which.
 
 **The two compose files** at the repository root orchestrate the local demo (`docker-compose.yml`) and the hybrid Azure deployment (`docker-compose.azure.yml`).
