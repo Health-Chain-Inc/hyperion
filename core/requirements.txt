@@ -10,5 +10,5 @@ configparser==7.1.0
 beautifulsoup4==4.12.3
 setuptools==80.10.2
 tailer==0.4.1
-cryptography==46.0.7
+cryptography==48.0.1
 apscheduler==3.11.2
