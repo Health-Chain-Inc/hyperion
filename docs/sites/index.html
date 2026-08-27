@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Primary SEO -->
-  <title>Hyperion: Query FHIR with plain SQL</title>
-  <meta name="description" content="Hyperion transforms HL7 FHIR R4 healthcare data into a columnar, MySQL-compatible SQL database. One table per resource type, columns that mirror FHIR R4. No FHIRPath, no JSON unnesting. Open source." />
+  <title>Hyperion: FHIR-native analytics powered by StarRocks</title>
+  <meta name="description" content="Hyperion is FHIR-native analytics powered by StarRocks — an open-source project created and maintained by Health Chain that transforms HL7 FHIR R4 data into analytics-ready relational tables, queryable with standard SQL. No FHIRPath, no JSON unnesting." />
   <link rel="canonical" href="https://health-chain-inc.github.io/hyperion/sites/" />
   <meta name="theme-color" content="#0f172a" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20x='6'%20y='14'%20width='4'%20height='12'%20rx='1.5'%20fill='%236366f1'/%3E%3Crect%20x='14'%20y='5'%20width='4'%20height='21'%20rx='1.5'%20fill='%234f46e5'/%3E%3Crect%20x='22'%20y='10'%20width='4'%20height='16'%20rx='1.5'%20fill='%23818cf8'/%3E%3C/svg%3E" />
@@ -14,15 +14,15 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Hyperion" />
-  <meta property="og:title" content="Hyperion: Query FHIR with plain SQL" />
-  <meta property="og:description" content="Transform HL7 FHIR R4 into a columnar, MySQL-compatible SQL database. One table per resource type. No FHIRPath, no JSON unnesting. Open source." />
+  <meta property="og:title" content="Hyperion: FHIR-native analytics powered by StarRocks" />
+  <meta property="og:description" content="An open-source project created and maintained by Health Chain that transforms HL7 FHIR R4 data into analytics-ready relational tables on StarRocks. No FHIRPath, no JSON unnesting. Open source." />
   <meta property="og:url" content="https://health-chain-inc.github.io/hyperion/sites/" />
   <meta property="og:image" content="https://health-chain-inc.github.io/hyperion/sites/og-image.svg" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Hyperion: Query FHIR with plain SQL" />
-  <meta name="twitter:description" content="Transform HL7 FHIR R4 into a columnar, MySQL-compatible SQL database. No FHIRPath, no JSON unnesting. Open source." />
+  <meta name="twitter:title" content="Hyperion: FHIR-native analytics powered by StarRocks" />
+  <meta name="twitter:description" content="Created and maintained by Health Chain. Transforms HL7 FHIR R4 into analytics-ready SQL tables on StarRocks. No FHIRPath, no JSON unnesting. Open source." />
   <meta name="twitter:image" content="https://health-chain-inc.github.io/hyperion/sites/og-image.svg" />
 
   <!-- Fonts: Inter (body/headings) + JetBrains Mono (code/labels) -->
@@ -66,11 +66,12 @@
     "datePublished": "2026-06-09",
     "dateModified": "2026-06-10",
     "softwareVersion": "0.1.0",
-    "description": "Hyperion transforms HL7 FHIR R4 healthcare data into a columnar, MySQL-compatible SQL database: one table per resource type, columns that mirror FHIR R4.",
+    "description": "Hyperion is FHIR-native analytics powered by StarRocks: an open-source project created and maintained by Health Chain that transforms HL7 FHIR R4 healthcare data into a columnar, MySQL-compatible SQL database, one table per resource type, columns that mirror FHIR R4.",
     "url": "https://health-chain-inc.github.io/hyperion/sites/",
     "codeRepository": "https://github.com/Health-Chain-Inc/hyperion",
     "license": "https://www.apache.org/licenses/LICENSE-2.0",
     "isAccessibleForFree": true,
+    "creator": { "@type": "Organization", "name": "Health Chain", "url": "https://github.com/Health-Chain-Inc" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -107,6 +108,7 @@
     <nav class="site-nav" aria-label="Primary">
       <a href="#why">Why</a>
       <a href="#mapping">How it maps</a>
+      <a href="#powered-by">Under the hood</a>
       <a href="#quickstart">Quickstart</a>
       <a href="#docs">Docs</a>
       <a class="nav-cta" href="https://github.com/Health-Chain-Inc/hyperion">
@@ -123,7 +125,7 @@
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="hero-inner">
         <div class="hero-copy">
-          <p class="kicker reveal" style="--d:0ms"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>From FHIR API to SQL in minutes · Apache&nbsp;2.0</p>
+          <p class="kicker reveal" style="--d:0ms"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>FHIR-native analytics powered by StarRocks · Apache&nbsp;2.0</p>
           <h1 class="reveal" style="--d:80ms"><span class="h1-thin">Query FHIR with</span><br /><span class="h1-bold accent-underline">plain SQL.</span></h1>
           <p class="lede reveal" style="--d:160ms">
             Pull HL7&nbsp;FHIR&nbsp;R4 from any compliant API into a columnar, MySQL-compatible database
@@ -230,6 +232,38 @@ a1b2  female  1984-03-11  ["Reyes"]</code></pre>
         </div>
         <p class="transform-note">Repeating FHIR elements (like <code>name</code>) become <code>ARRAY</code> columns: one row per resource, no exploding.</p>
       </div>
+    </section>
+
+    <!-- BUILT BY / POWERED BY -->
+    <section class="section" id="powered-by">
+      <div class="section-head">
+        <p class="kicker kicker-ink"><span class="col-mark" aria-hidden="true"><i></i><i></i><i></i></span>Built by Health Chain, powered by StarRocks</p>
+        <h2><span class="w6">Two technologies,</span> <span class="w9 accent">one clear line.</span></h2>
+        <p class="section-sub">Hyperion is an open-source project created and maintained by <strong>Health&nbsp;Chain</strong>. It runs on <a href="https://github.com/StarRocks/starrocks" target="_blank" rel="noopener">StarRocks</a>, a world-class open-source analytical database &mdash; we haven't modified the StarRocks codebase. What Health Chain built is everything above it: the FHIR&nbsp;R4 schema, the ingestion pipeline, and the healthcare data model that makes it queryable.</p>
+      </div>
+
+      <ol class="layer-stack" aria-label="Data flow from FHIR to SQL">
+        <li class="layer-item reveal-on-scroll"><span class="layer-label">FHIR&nbsp;R4 data</span><span class="layer-sub">Any compliant FHIR API</span></li>
+        <li class="layer-arrow" aria-hidden="true">↓</li>
+        <li class="layer-item layer-hc reveal-on-scroll"><span class="layer-label">Hyperion</span><span class="layer-sub">Health Chain's FHIR analytics layer &mdash; schema, ingestion, mapping</span></li>
+        <li class="layer-arrow" aria-hidden="true">↓</li>
+        <li class="layer-item reveal-on-scroll"><span class="layer-label">StarRocks</span><span class="layer-sub">Analytical database engine &mdash; unmodified upstream</span></li>
+        <li class="layer-arrow" aria-hidden="true">↓</li>
+        <li class="layer-item reveal-on-scroll"><span class="layer-label">Standard SQL / BI / AI</span><span class="layer-sub">Power BI, Tableau, dbt, JDBC/ODBC, notebooks</span></li>
+      </ol>
+
+      <ul class="not-grid attrib-grid">
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>What Health Chain built</h3>
+          <p>The FHIR&nbsp;R4-derived schema, the ingestion &amp; mapping pipeline, live/batch loading, and everything that turns FHIR resources into queryable SQL tables.</p>
+        </li>
+        <li class="reveal-on-scroll">
+          <span class="feature-rule" aria-hidden="true"></span>
+          <h3>What StarRocks provides</h3>
+          <p>The columnar, shared-data analytical engine underneath &mdash; storage/compute separation, the MySQL wire protocol, and query performance at scale. Run unmodified, as a container image pulled at runtime.</p>
+        </li>
+      </ul>
     </section>
 
     <!-- WHAT IT IS NOT -->
@@ -341,6 +375,7 @@ a1b2  female  1984-03-11  ["Reyes"]</code></pre>
         <a href="https://github.com/Health-Chain-Inc/hyperion">GitHub</a>
         <a href="https://github.com/Health-Chain-Inc/hyperion/tree/main/docs">Documentation</a>
         <a href="https://github.com/Health-Chain-Inc/hyperion/blob/main/LICENSE">License (Apache 2.0)</a>
+        <a href="https://github.com/StarRocks/starrocks">Powered by StarRocks</a>
       </nav>
     </div>
     <p class="disclaimer">
@@ -349,8 +384,7 @@ a1b2  female  1984-03-11  ["Reyes"]</code></pre>
       satisfy HIPAA, SOC&nbsp;2, or other regulatory obligations. Those remain the responsibility of
       the deploying organization.
     </p>
-    <p class="copyright">© 2026 · Open source under the Apache 2.0 license</p>
-    <p class="copyright">Traffic is measured with Google Analytics, loaded only after you accept the consent prompt.</p>
+    <p class="copyright">© 2026 Health Chain · Open source under the Apache 2.0 license</p>
   </footer>
 
   <div id="consent-banner" class="consent-banner" hidden role="dialog" aria-label="Analytics consent">
