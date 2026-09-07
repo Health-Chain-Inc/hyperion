@@ -1,21 +1,19 @@
-/* Hyperion landing page: neutral, unbranded palette (slate + indigo).
-   Intentionally avoids any proprietary brand colors or assets so the page is safe to
-   ship in the Apache-2.0 repository. Light theme default, dark slate hero.
-   (Variable names retained for stability; values are generic.) */
+/* Hyperion landing page: Health Chain brand palette (HC Blue / HC Orange),
+   matching health-chain.com. Light theme default, dark navy hero. */
 
 :root {
-  --hc-blue:      #1e293b;
-  --hc-blue-dk:   #0f172a;
-  --hc-blue-lt:   #334155;
-  --hc-orange:    #4f46e5;
-  --hc-orange-dk: #4338ca;
-  --hc-ocean:     #475569;
-  --hc-midnight:  #0f172a;
-  --hc-sky:       #4f46e5;
+  --hc-blue:      #004188; /* HC Blue — primary brand, headers, key CTAs */
+  --hc-blue-dk:   #22253d; /* Midnight — deep backgrounds */
+  --hc-blue-lt:   #355a7a; /* Ocean Blue — secondary/layered elements */
+  --hc-orange:    #f26d21; /* HC Orange — accents, highlights */
+  --hc-orange-dk: #d35f1a;
+  --hc-ocean:     #355a7a;
+  --hc-midnight:  #22253d;
+  --hc-sky:       #4a90d9; /* Sky Blue — links, interactive elements */
 
-  /* neutral tints */
-  --blue-wash:    #eef2ff;
-  --orange-wash:  #eef2ff;
+  /* brand tints */
+  --blue-wash:    #e7edf5;
+  --orange-wash:  #fdece0;
 
   --bg:        #ffffff;
   --surface:   #f9fafb;
@@ -168,6 +166,7 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 /* ---------- How it maps (dark) ---------- */
 .section-dark { background: var(--hc-midnight); color: #d7dce9; padding: clamp(58px, 9vw, 104px) clamp(16px, 5vw, 48px); }
 .section-dark h2 { color: #fff; }
+.section-dark .w6 { color: var(--hc-sky); } /* HC Blue (#004188) is too close in luminance to the midnight bg here — use HC Sky Blue, the brand's lighter interactive-blue, so it stays legible */
 .mapping-wrap { max-width: var(--maxw); margin: 0 auto; }
 .mapping-head { max-width: 640px; margin-bottom: 44px; }
 .mapping-head h2 { font-size: clamp(1.8rem, 3.8vw, 2.7rem); margin-bottom: 14px; }
@@ -200,6 +199,15 @@ code { font-family: var(--font-mono); font-size: 0.9em; }
 .c-num { color: #f7c66b; }
 .c-com { color: #8c99af; font-style: italic; } /* AA contrast on #0f1426 */
 .c-flag { color: #818cf8; font-weight: 600; }
+
+/* ---------- Built by / powered by (layer stack) ---------- */
+.layer-stack { list-style: none; margin: 0 0 40px; padding: 0; max-width: 520px; display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.layer-item { display: flex; flex-direction: column; gap: 2px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; box-shadow: 0 2px 16px -10px rgba(0,0,0,0.10); }
+.layer-item.layer-hc { border-color: var(--hc-orange); background: var(--blue-wash); }
+.layer-label { font-weight: 700; color: var(--hc-blue); font-size: 1.02rem; }
+.layer-sub { color: var(--ink-faint); font-size: 0.86rem; }
+.layer-arrow { text-align: center; color: var(--hc-orange); font-size: 1.1rem; line-height: 1; }
+.attrib-grid { margin-top: 4px; }
 
 /* ---------- What it's not ---------- */
 .not-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
