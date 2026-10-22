@@ -1,14 +1,17 @@
 # Hyperion
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![By Health Chain](https://img.shields.io/badge/by-Health_Chain-0b5cad.svg)](https://healthchain.com)
 
 **Query FHIR with plain SQL.**
 
+Open-source FHIR-to-SQL from [Health Chain](https://healthchain.com/): point it at a FHIR R4 API, query it like MySQL. We built it to make FHIR-ready data queryable with the SQL tools analytics teams already use.
+
 Hyperion points at a FHIR R4 API and pulls FHIR R4 resources into a columnar database that speaks the MySQL wire protocol. One table per resource type, columns that mirror FHIR R4. Connect any SQL client and start querying.
 
-No FHIRPath. No unnesting JSON. No driver to install. Power BI, Tableau, dbt, DBeaver, Metabase, or your psql-but-for-mysql of choice: if your tool talks to MySQL, it talks to Hyperion.
+No FHIRPath. No unnesting JSON. No driver to install. If your tool talks to MySQL (Power BI, Tableau, dbt, DBeaver, Metabase), it talks to Hyperion.
 
-## Why you'd want this
+## Why Hyperion
 
 FHIR is built for exchange: deeply nested JSON, designed to move one patient between systems. The second you want a population answer, you're either writing FHIRPath, hand-rolling a flattening pipeline into a warehouse, or authoring SQL-on-FHIR ViewDefinitions one by one. Then you maintain that forever as the spec moves and profiles change.
 
@@ -83,7 +86,13 @@ All docs are indexed in [`docs/`](docs/README.md).
 
 ## Intended use
 
-Hyperion is data-engineering infrastructure for analytics. It is not a medical device, is not validated or intended for clinical decision-making or patient care, and deploying it does not by itself satisfy HIPAA, SOC 2, or any other regulatory obligation; those remain the responsibility of the deploying organization.
+Health Chain provides Hyperion as-is under the Apache 2.0 license. Hyperion is data-engineering infrastructure for analytics. It is not a medical device, is not validated or intended for clinical decision-making or patient care, and deploying it does not by itself satisfy HIPAA, SOC 2, or any other regulatory obligation; those remain the responsibility of the deploying organization. Certifications and compliance attestations for Health Chain's hosted platform do not extend to self-hosted deployments of Hyperion.
+
+## Maintainers and support
+
+Hyperion is maintained by the Health Chain engineering team. Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+Hyperion is free and self-hosted. If you want end-to-end data readiness (ingestion from claims, clinical, pharmacy, and SDOH sources, curation into FHIR, and delivery downstream), [talk to Health Chain](https://healthchain.com/contact).
 
 ## Community and contributing
 
@@ -94,4 +103,5 @@ Hyperion is data-engineering infrastructure for analytics. It is not a medical d
 
 ## License
 
-Apache 2.0. See [LICENSE](LICENSE).
+Copyright © 2026 Health Chain Inc. Licensed under the Apache License 2.0.
+See [LICENSE](LICENSE) and [NOTICE](NOTICE) for third-party attributions (HL7 FHIR, StarRocks, Synthea).
